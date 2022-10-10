@@ -1,0 +1,45 @@
+{
+    "name": "startci/framework",
+    "type": "library",
+    "description": "Addons for codeigniter 4",
+    "homepage": "http://",
+    "license": "MIT",
+    "require": {
+        "php": ">=7.2",
+        "smarty/smarty": "^4.1",
+        "adhocore/cron-expr": "^1.1",
+        "symfony/process": "^6.0",
+        "fakerphp/faker": "^1.19",
+        "nesbot/carbon": "^2.57",
+        "tightenco/collect": "^9.0",
+        "phpdocumentor/reflection-docblock": "^5.3",
+        "firebase/php-jwt": "^6.0"
+    },
+    "require-dev": {
+        "codeigniter4/codeigniter4-standard": "^1.1",
+        "mikey179/vfsstream": "1.6.*",
+        "codeigniter4/framework": "^4.1",
+        "phpunit/phpunit": "*",
+        "squizlabs/php_codesniffer": "^3.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "CodeIgniter\\": "src/"
+        },
+        "files": [
+            "src/Common.php"
+        ]
+    },
+    "scripts": {
+        "post-update-cmd": [
+            "@composer dump-autoload",
+            "CodeIgniter\\ComposerScripts::postUpdate"
+            
+        ]
+    },
+    "support": {
+        "forum": "http://forum.codeigniter.com/",
+        "source": "https://github.com/codeigniter4/CodeIgniter4",
+        "slack": "https://codeigniterchat.slack.com"
+    }
+}
