@@ -87,10 +87,7 @@ class Init extends \CodeIgniter\CLI\BaseCommand
                 $climate->error("Connot find rr executable");
                 return false;
             }
-
-
-
-            (is_cli()) ? eval(\Psy\sh()) : false;
+            $climate->out("Please read documentation in https://github.com/SDPM-lab/Codeigniter4-Roadrunner");
             chdir($oldpath);
             unset($oldpath);
         }
