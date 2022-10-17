@@ -1,8 +1,9 @@
 {
-    "name": "startci/framework",
+    "name": "startci/project",
     "type": "library",
+    "version": "0.505",
     "description": "Addons for codeigniter 4",
-    "homepage": "http://",
+    "homepage": "https://github.com/StartCI/project",
     "license": "MIT",
     "require": {
         "php": ">=7.2",
@@ -13,7 +14,12 @@
         "nesbot/carbon": "^2.57",
         "tightenco/collect": "^9.0",
         "phpdocumentor/reflection-docblock": "^5.3",
-        "firebase/php-jwt": "^6.0"
+        "firebase/php-jwt": "^6.0",
+        "slowprog/composer-copy-file": "^0.3.3",
+        "composer/composer": "^2.4",
+        "symfony/console": "^6.0",
+        "league/climate": "^3.8",
+        "psy/psysh": "^0.11.8"
     },
     "require-dev": {
         "codeigniter4/codeigniter4-standard": "^1.1",
@@ -24,7 +30,7 @@
     },
     "autoload": {
         "psr-4": {
-            "CodeIgniter\\": "src/"
+            "CodeIgniter\\Startci\\": "src/"
         },
         "files": [
             "src/Common.php"
@@ -32,14 +38,8 @@
     },
     "scripts": {
         "post-update-cmd": [
-            "@composer dump-autoload",
-            "CodeIgniter\\ComposerScripts::postUpdate"
-            
+            "@composer dump-autoload"
         ]
     },
-    "support": {
-        "forum": "http://forum.codeigniter.com/",
-        "source": "https://github.com/codeigniter4/CodeIgniter4",
-        "slack": "https://codeigniterchat.slack.com"
-    }
+    "bin": ["startci"]
 }

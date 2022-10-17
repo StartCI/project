@@ -236,7 +236,7 @@ class ORM
         //TODO: Refatorar para criar 
 
         if ($rc->hasMethod('seed'))
-            if (!$this->db->table($this->table)->first())
+            if (!$this->db->table($this->table)->first())//TODO: melhorar detecção 
                 if ($seed = $myClass->seed())
                     $this->builder->insertBatch($seed);
     }
