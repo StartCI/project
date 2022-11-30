@@ -48,7 +48,7 @@ class Init extends \CodeIgniter\CLI\BaseCommand
             $climate->animation('ci1')->speed(200)->enterFrom('right');
         else
             $climate->animation('ci' . $i)->speed(150)->enterFrom('bottom');
-
+        $root_routing = false;
         if ($climate->confirm('Enable root routing ?')->confirmed()) {
             if (!file_exists(ROOTPATH . '/public')) {
                 $climate->error("Public Folder not found");
@@ -67,8 +67,7 @@ class Init extends \CodeIgniter\CLI\BaseCommand
             $index = file_get_contents(ROOTPATH . '/index.php');
             $index = str_replace("require FCPATH . '../app/Config/Paths.php'", "require FCPATH . 'app/Config/Paths.php'", $index);
             file_put_contents(ROOTPATH . '/index.php', $index);
-
-            $climate->white("Configurando root routing");
+            $root_routing = true;
             (is_cli()) ? eval(\Psy\sh()) : false;
         }
 
@@ -87,12 +86,28 @@ class Init extends \CodeIgniter\CLI\BaseCommand
                 $climate->error("Connot find rr executable");
                 return false;
             }
+            if($root_routing){
+                sleep(1);
+                if(!file_exists('rr.yaml')){
+                    $climate->error("Connot find rr.yaml configuration see more information in https://github.com/SDPM-lab/Codeigniter4-Roadrunner");
+                    return false;
+                }
+                $rr_yaml = file_get_contents('rr.yaml');
+                $rr_yaml = str_replace('dir: public','dir: .',$rr_yaml);
+                file_put_contents('rr.yaml',$rr_yaml);
+                unset($rr_yaml);
+            }
             $climate->out("Please read documentation in https://github.com/SDPM-lab/Codeigniter4-Roadrunner");
             chdir($oldpath);
             unset($oldpath);
         }
         if ($climate->confirm('Enable auto routing ?')->confirmed()) {
+            
 
+
+            (is_cli()) ? eval(\Psy\sh()) : false;
+        }
+        if ($climate->confirm('Enable codeigniter 3 legacy package ?')->confirmed()) {
             $climate->white("Configurando root routing");
             (is_cli()) ? eval(\Psy\sh()) : false;
         }

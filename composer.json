@@ -1,7 +1,7 @@
 {
     "name": "startci/project",
     "type": "library",
-    "version": "0.506",
+    "version": "0.509",
     "description": "Addons for codeigniter 4",
     "homepage": "https://github.com/StartCI/project",
     "license": "MIT",
@@ -18,8 +18,8 @@
         "slowprog/composer-copy-file": "^0.3.3",
         "composer/composer": "^2.4",
         "symfony/console": "^6.0",
-        "league/climate": "^3.8",
-        "psy/psysh": "^0.11.8"
+        "psy/psysh": "^0.11.8",
+        "league/climate": "^3.8.2"
     },
     "require-dev": {
         "codeigniter4/codeigniter4-standard": "^1.1",
@@ -40,6 +40,5 @@
         "post-update-cmd": [
             "@composer dump-autoload"
         ]
-    },
-    "bin": ["startci"]
+    }
 }
