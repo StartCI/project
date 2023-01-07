@@ -5,6 +5,7 @@
     "description": "Addons for codeigniter 4",
     "homepage": "https://github.com/StartCI/project",
     "license": "MIT",
+    "minimum-stability":"stable",
     "require": {
         "php": ">=7.2",
         "smarty/smarty": "^4.1",
