@@ -3,9 +3,12 @@
 namespace CodeIgniter;
 
 use CodeIgniter\CLI\CLI;
+use CodeIgniter\Database\Config;
 use phpDocumentor\Reflection\DocBlock\Tags\Property;
 use phpDocumentor\Reflection\DocBlockFactory;
 use ReflectionClass;
+use ReflectionObject;
+use ReflectionProperty;
 
 /**
  * @method ORM where($key, $value = null, bool $escape = null) Description
@@ -70,12 +73,14 @@ class ORM
      * 
      * @var Database\BaseBuilder
      */
-    public $builder;
-    public $class;
-    public $table = '';
-    public $autoload = [];
-    public $fields = [];
-    public $data = [];
+    private $builder;
+    private $class;
+    private $table = '';
+    private $autoload = [];
+    private $fields = [];
+    private $data = [];
+    private $queryHistory = [];
+
     /**
      * @return static
      */
@@ -83,17 +88,37 @@ class ORM
     {
         return new static($db);
     }
+    function get_fields()
+    {
+        return $this->fields;
+    }
+    function history()
+    {
+        return $this->queryHistory;
+    }
+    function get_class()
+    {
+        return $this->class;
+    }
+    function get_table()
+    {
+        return $this->table;
+    }
+    function get_autoload()
+    {
+        return array_unique($this->autoload);
+    }
     function fromObject(object $o)
     {
         foreach (get_object_vars($o) as $key => $value) {
-            $this->{$key} = $value;
+            $this->data[$key] = $value;
         }
         return $this;
     }
     function fromArray(array $o)
     {
         foreach ($o as $key => $value) {
-            $this->{$key} = $value;
+            $this->data[$key] = $value;
         }
         return $this;
     }
@@ -113,6 +138,17 @@ class ORM
         return $value;
     }
 
+    function onGet($name)
+    {
+        return $this->data[$name];
+    }
+
+    function __get($name)
+    {
+        $value = $this->onGet($name);
+        return $value;
+    }
+
     function __set($name, $value)
     {
         $value = $this->onSet($name, $value);
@@ -125,21 +161,33 @@ class ORM
         if ($this->onSave() === false)
             return false;
         $d = [];
-
-        foreach ($this->data as $key => $value) {
+        $reflection = new ReflectionObject($this);
+        $properties = $reflection->getProperties();
+        $ps = [];
+        foreach ($properties as $property)
+            $ps[] = $property->name;
+        foreach ($ps as $key => $value) {
+            $key = $value;
+            $value = $this->{$value};
             if (isset($value->id))
-                $value = $value->id;
+                if ($value->id)
+                    $value = $value->id;
             $d[$key] = $value;
         }
         $d = array_merge($d, $data);
         if ($d['id'] ?? false) {
             $this->where('id', $d['id'])->update($d);
-            return $this;
+            $r = $this->byId($d['id']);
+            $this->id = $r->id;
+            return $r;
         } else {
-            if ($this->insert($d))
-                return $this->byId($this->builder->selectMax('id')->first($this->class)->id);
-            else
+            if ($this->insert($d)) {
+                $r = $this->byId($this->builder->selectMax('id')->first()->id);
+                $this->id = $r->id;
+                return $r;
+            } else {
                 return false;
+            }
         }
     }
 
@@ -147,8 +195,8 @@ class ORM
     {
         if ($this->onRemove() === false)
             return false;
-        if ($this->data['id'] ?? false) {
-            return $this->where('id', $this->data['id'])->delete();
+        if ($this->id ?? false) {
+            return $this->where('id', $this->id)->delete();
         }
         return false;
     }
@@ -167,6 +215,14 @@ class ORM
         $factory = DocBlockFactory::createInstance();
         $docblock = $factory->create($rc->getDocComment() ?? '');
         $tags = $docblock->getTagsByName('property');
+        $autoload = $docblock->getTagsByName('autoload');
+        $this->table = strval($docblock->getTagsByName('table')[0]);
+        if (!$this->table)
+            $this->table = strtolower($c_name);
+        $this->builder = $this->db->table($this->table);
+        if ($autoload) {
+            $this->autoload = explode(' ', strval($autoload[0]));
+        }
         foreach ($tags as $key => $value) {
             $type = strval($value->getType());
             $name = $value->getVariableName();
@@ -177,13 +233,17 @@ class ORM
                 ];
         }
         $this->fields = $fields;
+        $tables = $this->db->listTables();
+        if (!in_array($this->table, $tables)) {
+            $this->create();
+        }
     }
     function load($prop)
     {
         $this->autoload[] = $prop;
         return $this;
     }
-    function create($prefix = null)
+    function create($prefix = null, $pk = true)
     {
         $rc = new ReflectionClass($this->class);
         if (!$models_create = cache()->get('startci_models_create'))
@@ -231,14 +291,29 @@ class ORM
                 continue;
             $fields[$name] = $type;
         }
-        $this->builder->create($fields);
+        $this->builder->create($fields, $pk);
+    }
 
-        //TODO: Refatorar para criar 
-
-        if ($rc->hasMethod('seed'))
-            if (!$this->db->table($this->table)->first())//TODO: melhorar detecção 
-                if ($seed = $myClass->seed())
-                    $this->builder->insertBatch($seed);
+    function run_seed()
+    {
+        $rc = new ReflectionClass($this->class);
+        $myClass = new $this->class();
+        if ($rc->hasMethod('seed')) {
+            if ($this->db->table($this->table)->countAll() == 0) {
+                CLI::write("Running seed in $this->table");
+                if ($seed = $myClass->seed()) {
+                    foreach ($seed as $key => $s) {
+                        try {
+                            if (!$this->builder->insert($s)) {
+                                die(CLI::error($this->class . "-" . db_connect()->error()['message']));
+                            }
+                        } catch (\Throwable $th) {
+                            die(CLI::error($this->class . "-" . db_connect()->error()['message']));
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -273,25 +348,36 @@ class ORM
      */
     function get(): \Tightenco\Collect\Support\Collection
     {
-        $autoload = $this->autoload;
-        $r = collect($this->builder->rs($this->class))->map(function ($v, $k) use ($autoload) {
-            $r = (object) [];
-            foreach ($this->fields as $key => $value) {
-                $name = $value['name'];
-                if (!in_array($name, $autoload))
-                    $r->{$name} = $v->{$name};
-            }
-            foreach ($autoload as $key => $value)
-                try {
-                    $r->{$value} = $v->__get($value);
-                } catch (\Throwable $th) {
+        try {
+            //code...
+
+            $autoload = $this->get_autoload();
+            $r = collect($this->builder->rs())->map(function ($v, $k) use ($autoload) {
+                $class = $this->get_class();
+                $r = new $class($this->db);
+                if (!$v)
+                    return null;
+                foreach ($this->get_fields() as $key => $value) {
+                    $name = $value['name'];
+                    if (isset($v->{$name}))
+                        $r->{$name} = ($v->{$name} != "null") ? $v->{$name} : null;
+                    else
+                        $r->{$name} = null;
                 }
-            $o = new $this->class();
-            $r = $o->fromObject($r);
-            return $r;
-        });
+                foreach ($this->get_autoload() as $key => $value) {
+                    $content = $r->onGet($value);
+                    $r->{$value} = $content;
+                }
+                return $r;
+            });
+        } catch (\Throwable $th) {
+
+            throw $th;
+        }
         return $r;
     }
+
+
 
     /**
      * 
@@ -299,22 +385,22 @@ class ORM
      */
     function first()
     {
-        $v = $this->builder->first($this->class);
+        $v = $this->builder->first();
+        $class = $this->get_class();
+        $r = new $class($this->db);
         if (!$v)
             return null;
-        $r = (object) [];
-        foreach ($this->fields as $key => $value) {
+        foreach ($this->get_fields() as $key => $value) {
             $name = $value['name'];
-            if (!in_array($name, $this->autoload))
-                $r->{$name} = $v->{$name};
+            if (isset($v->{$name}))
+                $r->{$name} = ($v->{$name} != "null") ? $v->{$name} : null;
+            else
+                $r->{$name} = null;
         }
-        foreach ($this->autoload as $key => $value)
-            try {
-                $r->{$value} = $v->__get($value);
-            } catch (\Throwable $th) {
-            }
-        $o = new $this->class();
-        $r = $o->fromObject($r);
+        foreach ($this->get_autoload() as $key => $value) {
+            $content = $r->onGet($value);
+            $r->{$value} = $content;
+        }
         return  $r;
     }
 
@@ -332,11 +418,17 @@ class ORM
             $result = $this->builder->{$name}(...$params);
         if (is_object($result) && !$result instanceof ORM)
             $result = $this;
+        $this->queryHistory[] = db_connect()->getLastQuery() . '';
         return $result;
     }
 
     function toJson()
     {
-        return json_encode($this);
+        return json_encode($this->data);
+    }
+
+    public function __debugInfo()
+    {
+        return $this->data;
     }
 }
