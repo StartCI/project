@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-namespace CodeIgniter;
+namespace CodeIgniter\Startci;
 
 /**
  * Description of jquery

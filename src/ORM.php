@@ -1,9 +1,10 @@
 <?php
 
-namespace CodeIgniter;
+namespace CodeIgniter\Startci;
 
 use CodeIgniter\CLI\CLI;
 use CodeIgniter\Database\Config;
+use CodeIgniter\Database\Database;
 use phpDocumentor\Reflection\DocBlock\Tags\Property;
 use phpDocumentor\Reflection\DocBlockFactory;
 use ReflectionClass;
@@ -291,7 +292,7 @@ class ORM
                 continue;
             $fields[$name] = $type;
         }
-        $this->builder->create($fields, $pk);
+        $this->_create($fields, $pk);
     }
 
     function run_seed()
@@ -352,7 +353,7 @@ class ORM
             //code...
 
             $autoload = $this->get_autoload();
-            $r = collect($this->builder->rs())->map(function ($v, $k) use ($autoload) {
+            $r = collect($this->builder->get()->getResult())->map(function ($v, $k) use ($autoload) {
                 $class = $this->get_class();
                 $r = new $class($this->db);
                 if (!$v)
@@ -385,7 +386,7 @@ class ORM
      */
     function first()
     {
-        $v = $this->builder->first();
+        $v = $this->_first();
         $class = $this->get_class();
         $r = new $class($this->db);
         if (!$v)
@@ -431,4 +432,159 @@ class ORM
     {
         return $this->data;
     }
+
+    /**
+     * Sets a test mode status.
+     *
+     * @param boolean $type Mode to set
+     *
+     * @return mixed
+     */
+    public function _first(string $type = 'object')
+    {
+        return $this->get()->getFirstRow($type);
+    }
+
+    /**
+     * Sets a test mode status.
+     *
+     * @param boolean $type Mode to set
+     *
+     * @return mixed
+     */
+    public function _last(string $type = 'object')
+    {
+        return $this->get()->getLastRow($type);
+    }
+
+    /**
+     * Sets a test mode status.
+     *
+     * @param boolean $mode Mode to set
+     *
+     * @return BaseBuilder
+     */
+    function def($values = [])
+    {
+        $table = $this->tableName;
+        $forge = \Config\Database::forge($this->db);
+        $db = $this->db();
+        $v = [];
+
+        foreach ($db->getFieldNames($table) as $key => $value) {
+            $v[$value] = (!isset($values[$value])) ? null : $values[$value];
+        }
+        return (object) $v;
+    }
+
+    /**
+     * Sets a test mode status.
+     *
+     * @param array $fields Array of fields
+     * @param boolean $pk create or not pk 
+     *
+     * @return $this
+     */
+    public function _create(array $fields, $pk = true)
+    {
+        $table = $this->table;
+
+
+        $forge =\Config\Database::forge($this->db);
+        $db = $this->db;
+        $tables = $db->listTables();
+        $f = [];
+        foreach ($fields as $k => $field) {
+            if (is_numeric($k)) {
+                $key_name = $field;
+                $f[$key_name] = 'TEXT';
+            } else {
+                $key_name = $k;
+                $f[$key_name] = $field;
+            }
+        }
+        $fields = $f;
+
+        if (in_array($table, $tables)) {
+            $field_names = array_unique($db->getFieldNames($table) ?? []);
+
+            foreach ($fields as $name => $type) {
+                if (in_array($name, $field_names))
+                    continue;
+                if (strpos($type, '.') !== false) {
+                    if ($pk) {
+                        $type = explode('.', $type);
+                        $forge->addField([
+                            $name => [
+                                'type' => 'INT',
+                                'null' => true,
+                            ]
+                        ]);
+                        $forge->addKey($name);
+                        $forge->addForeignKey($name, $type[0], $type[1], 'NO ACTION', 'NO ACTION');
+                        $forge->addColumn($table, [
+                            $name => [
+                                'type' => 'INT',
+                                'null' => true
+                            ]
+                        ]);
+                    }
+                } else {
+                    $forge->addColumn($table, [
+                        $name => [
+                            'type' => $type,
+                            'null' => true
+                        ]
+                    ]);
+                }
+            }
+        } else {
+            $forge->addField('id');
+            foreach ($fields as $name => $type) {
+                if (strpos($type, '.') !== false) {
+                    if ($pk) {
+                        $forge->addField([
+                            $name => [
+                                'type' => 'INT',
+                                'null' => true
+                            ]
+                        ]);
+                        $type = explode('.', $type);
+                        $forge->addKey($name);
+                        $forge->addForeignKey($name, $type[0], $type[1], 'NO ACTION', 'NO ACTION');
+                    }
+                } else {
+                    $forge->addField([
+                        $name => [
+                            'type' => $type,
+                            'null' => true
+                        ]
+                    ]);
+                }
+            }
+            switch ($db->getPlatform()) {
+                case 'Postgre':
+                    $forge->addField('created_at timestamp with time zone  NOT NULL  DEFAULT current_timestamp');
+                    $forge->addField('updated_at timestamp with time zone  NOT NULL  DEFAULT current_timestamp');
+                    break;
+                case 'SQLite3':
+                    $forge->addField('created_at DATETIME NOT NULL DEFAULT (datetime(\'now\',\'localtime\'))');
+                    $forge->addField('updated_at DATETIME NOT NULL DEFAULT (datetime(\'now\',\'localtime\'))');
+                    break;
+                case 'MySQLi':
+                    $forge->addField('created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP');
+                    $forge->addField('updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP');
+                    break;
+            }
+            $forge->createTable($table, true);
+        }
+        return $this;
+    }
+
+    function whereRaw($cond)
+    {
+        $this->where($cond, null, false);
+        return $this;
+    }
+
 }

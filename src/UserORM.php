@@ -1,6 +1,6 @@
 <?php
 
-namespace CodeIgniter;
+namespace CodeIgniter\Startci;
 
 use phpDocumentor\Reflection\DocBlock\Tags\Property;
 use phpDocumentor\Reflection\DocBlockFactory;

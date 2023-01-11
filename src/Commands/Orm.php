@@ -38,7 +38,7 @@ class Orm extends BaseCommand
      *
      * @var string
      */
-    protected $name = 'orm';
+    protected $name = 'startci:orm';
 
     /**
      * the Command's short description
@@ -78,9 +78,9 @@ class Orm extends BaseCommand
         $cmd = $params[0] ?? null;
         $this->$cmd($params);
     }
+
     function create($params)
-    {
-        
+    { 
         if (!isset($params[1]))
             $params[1] = CLI::prompt('Class name ', null, 'required');
         $table = strtolower($params[1]);
@@ -97,7 +97,7 @@ class Orm extends BaseCommand
         $file .= " * @property string \$updated_at" . PHP_EOL;
         $file .= " * @table $table" . PHP_EOL;
         $file .= " */" . PHP_EOL;
-        $file .= "class $className extends \CodeIgniter\ORM {" . PHP_EOL;
+        $file .= "class $className extends \CodeIgniter\Startci\ORM {" . PHP_EOL;
         $file .= "" . PHP_EOL;
         $file .= "    function __get(\$name)" . PHP_EOL;
         $file .= "    {" . PHP_EOL;
@@ -135,7 +135,6 @@ class Orm extends BaseCommand
         } catch (\Throwable $th) {
         }
     }
-
 
     function read()
     {
@@ -182,7 +181,7 @@ class Orm extends BaseCommand
             $file .= " * @property string \$updated_at" . PHP_EOL;
             $file .= " * @table $table" . PHP_EOL;
             $file .= " */" . PHP_EOL;
-            $file .= "class $className extends \CodeIgniter\ORM {" . PHP_EOL;
+            $file .= "class $className extends \CodeIgniter\Startci\ORM {" . PHP_EOL;
             $file .= "" . PHP_EOL;
             $file .= "    function seed()" . PHP_EOL;
             $file .= "    {" . PHP_EOL;
@@ -191,7 +190,7 @@ class Orm extends BaseCommand
                 $rs = $con->table($table)->limit(10)->select($select_fields);
                 if ($have_id)
                     $rs->orderBy('id', 'ASC');
-                foreach ($rs->rs() as $key => $value) {
+                foreach ($rs->get()->getResult() as $key => $value) {
                     $file .= "[        " . PHP_EOL;
                     foreach ($select_fields as $key => $f) {
                         $file .= "   '$f' => '" . addslashes($value->{$f}) . "'," . PHP_EOL;
@@ -207,7 +206,7 @@ class Orm extends BaseCommand
             $file .= "    }" . PHP_EOL;
             $file .= "" . PHP_EOL;
             $file .= "" . PHP_EOL;
-            $file .= "    function __get(\$name)" . PHP_EOL;
+            $file .= "    function onGet(\$name)" . PHP_EOL;
             $file .= "    {" . PHP_EOL;
             $file .= "        switch(\$name){" . PHP_EOL;
             $file .= "            case '':" . PHP_EOL;
@@ -221,10 +220,102 @@ class Orm extends BaseCommand
             // file_put_contents("../debug/$className.php", $file);
         }
     }
-
+    function seed($p)
+    {
+        $path = '../app/Models';
+        $fqcns = array();
+        $allFiles = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path));
+        $phpFiles = new RegexIterator($allFiles, '/\.php$/');
+        foreach ($phpFiles as $phpFile) {
+            $content = file_get_contents($phpFile->getRealPath());
+            $tokens = token_get_all($content);
+            $namespace = '';
+            for ($index = 0; isset($tokens[$index]); $index++) {
+                if (!isset($tokens[$index][0])) {
+                    continue;
+                }
+                if (T_NAMESPACE === $tokens[$index][0]) {
+                    $index += 2; // Skip namespace keyword and whitespace
+                    while (isset($tokens[$index]) && is_array($tokens[$index])) {
+                        $namespace .= $tokens[$index++][1];
+                    }
+                }
+                if (T_CLASS === $tokens[$index][0] && T_WHITESPACE === $tokens[$index + 1][0] && T_STRING === $tokens[$index + 2][0]) {
+                    $index += 2;
+                    if ($p[1] ?? false) {
+                        if (strtolower($tokens[$index][1]) == $p[1] ?? '') {
+                            $fqcns[] = $namespace . '\\' . $tokens[$index][1];
+                        }
+                    } else {
+                        $fqcns[] = $namespace . '\\' . $tokens[$index][1];
+                    }
+                    break;
+                }
+            }
+        }
+        $count = count($fqcns);
+        foreach ($fqcns as $key => $value) {
+            $fqn = $value;
+            if (!class_exists($fqn))
+                CLI::error("The class $fqn not found");
+            $c = new $fqn();
+            CLI::clearScreen();
+            CLI::print("Seed key $fqn");
+            CLI::newLine();
+            CLI::showProgress($key, $count);
+            $c->run_seed();
+        }
+    }
+    function truncate($p)
+    {
+        $path = '../app/Models';
+        $fqcns = array();
+        $allFiles = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path));
+        $phpFiles = new RegexIterator($allFiles, '/\.php$/');
+        foreach ($phpFiles as $phpFile) {
+            $content = file_get_contents($phpFile->getRealPath());
+            $tokens = token_get_all($content);
+            $namespace = '';
+            for ($index = 0; isset($tokens[$index]); $index++) {
+                if (!isset($tokens[$index][0])) {
+                    continue;
+                }
+                if (T_NAMESPACE === $tokens[$index][0]) {
+                    $index += 2; // Skip namespace keyword and whitespace
+                    while (isset($tokens[$index]) && is_array($tokens[$index])) {
+                        $namespace .= $tokens[$index++][1];
+                    }
+                }
+                if (T_CLASS === $tokens[$index][0] && T_WHITESPACE === $tokens[$index + 1][0] && T_STRING === $tokens[$index + 2][0]) {
+                    $index += 2;
+                    if ($p[1] ?? false) {
+                        if (strtolower($tokens[$index][1]) == $p[1] ?? '') {
+                            $fqcns[] = $namespace . '\\' . $tokens[$index][1];
+                        }
+                    } else {
+                        $fqcns[] = $namespace . '\\' . $tokens[$index][1];
+                    }
+                    break;
+                }
+            }
+        }
+        $db = db_connect();
+        $count = count($fqcns);
+        foreach ($fqcns as $key => $value) {
+            $fqn = $value;
+            if (!class_exists($fqn))
+                CLI::error("The class $fqn not found");
+            $c = new $fqn();
+            CLI::clearScreen();
+            CLI::print("Truncate key $fqn");
+            CLI::newLine();
+            CLI::showProgress($key, $count);
+            $table = $c->get_table();
+            $db->query("truncate table $table");
+        }
+    }
     function up()
     {
-
         cache()->delete('startci_models_create');
         $con = db_connect();
         $con->transBegin();
@@ -258,12 +349,43 @@ class Orm extends BaseCommand
                 }
             }
         }
+
+        $count = count($fqcns);
         foreach ($fqcns as $key => $value) { //pegar todas as classes e namespaces
             $fqn = $value;
             if (!class_exists($fqn))
                 CLI::error("The class $fqn not found");
+
             $c = new $fqn();
-            $c->create();
+
+
+            try {
+                CLI::clearScreen();
+                CLI::print("Table  $fqn");
+                CLI::newLine();
+                CLI::showProgress($key, $count);
+
+                $c->create(false);
+            } catch (\Throwable $th) {
+                (is_cli()) ? eval(\Psy\sh()) : false;
+
+                CLI::error(db_connect()->getLastQuery() . '');
+                throw $th;
+            } finally {
+            }
+        }
+
+
+        foreach ($fqcns as $key => $value) {
+            $fqn = $value;
+            if (!class_exists($fqn))
+                CLI::error("The class $fqn not found");
+            $c = new $fqn();
+            CLI::clearScreen();
+            CLI::print("Foreign key $fqn");
+            CLI::newLine();
+            CLI::showProgress($key, $count);
+            $c->create(true);
         }
         try {
             $con->simpleQuery("SET foreign_key_checks = 1");
