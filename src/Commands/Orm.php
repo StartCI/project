@@ -80,7 +80,7 @@ class Orm extends BaseCommand
     }
 
     function create($params)
-    { 
+    {
         if (!isset($params[1]))
             $params[1] = CLI::prompt('Class name ', null, 'required');
         $table = strtolower($params[1]);
@@ -99,7 +99,7 @@ class Orm extends BaseCommand
         $file .= " */" . PHP_EOL;
         $file .= "class $className extends \CodeIgniter\Startci\ORM {" . PHP_EOL;
         $file .= "" . PHP_EOL;
-        $file .= "    function __get(\$name)" . PHP_EOL;
+        $file .= "    function onGet(\$name)" . PHP_EOL;
         $file .= "    {" . PHP_EOL;
         $file .= "        switch(\$name){" . PHP_EOL;
         $file .= "            case '':" . PHP_EOL;
@@ -117,10 +117,10 @@ class Orm extends BaseCommand
         $file = '';
         $file = file_get_contents('../app/Common.php') . PHP_EOL;;
         $file .= "/** " . PHP_EOL;
-        $file .= " * @return \App\Models\\".$className . PHP_EOL;
+        $file .= " * @return \App\Models\\" . $className . PHP_EOL;
         $file .= " */" . PHP_EOL;
         $file .= "function model_$table(){" . PHP_EOL;
-        $file .= "  return new \App\Models\\".$className."();" . PHP_EOL;
+        $file .= "  return new \App\Models\\" . $className . "();" . PHP_EOL;
         $file .= "}" . PHP_EOL . PHP_EOL;
         file_put_contents('../app/Common.php', $file);
     }
@@ -317,13 +317,25 @@ class Orm extends BaseCommand
     function up()
     {
         cache()->delete('startci_models_create');
-        $con = db_connect();
-        $con->transBegin();
         try {
-            $con->simpleQuery("SET foreign_key_checks = 0");
+            $database = env('database.default.database');
+            $config = [
+                'hostname' => env('database.default.hostname'),
+                'username' => env('database.default.username'),
+                'password' => env('database.default.password'),
+                'DBDriver' => env('database.default.DBDriver'),
+                'DBPrefix' => env('database.default.DBPrefix'),
+                'port' => env('database.default.port'),
+            ];
+            \Config\Database::forge($config)->createDatabase($database, true);
         } catch (\Throwable $th) {
+            //throw $th;
         }
+        $con = db_connect();
+        // $con->simpleQuery("create database $database");
+        $con->simpleQuery("SET foreign_key_checks = 0");
 
+        $con->transBegin();
         $path = '../app/Models';
         $fqcns = array();
         $allFiles = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path));
