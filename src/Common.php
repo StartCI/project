@@ -57,7 +57,7 @@ function form($key = null, $default = null)
             return $_JSON[$key];
         return isset($_REQUEST[$key]) ? $_REQUEST[$key] : $default;
     } else {
-        return array_merge($_GET , $_POST ,$_JSON);
+        return array_merge($_GET, $_POST, $_JSON);
     }
 }
 
@@ -106,8 +106,6 @@ function user($table = 'users')
     if (session()->has('id'))
         $id = session()->get('id');
     try {
-        // s(substr(getallheaders()['Authorization'], strlen("Bearer ")));
-        // die;
         if (isset(getallheaders()['Authorization'])) {
             $id = jwt_decode(substr(getallheaders()['Authorization'], strlen("Bearer ")));
             if (is_object($id))
@@ -698,7 +696,7 @@ function upload($id, $plus = "", $size = 3)
     echo div($r, $size);
 }
 
-function div($elemento = "", $tamanho = 2, $class = "",$plus="")
+function div($elemento = "", $tamanho = 2, $class = "", $plus = "")
 {
     return "<div class='col-md-$tamanho $class' $plus >$elemento</div>\n";
 }
@@ -843,6 +841,26 @@ function hidden($id, $value = "", $show = false)
 //     }
 //     Kint\Kint::$aliases[] = 'sd';
 // }
-
-
+/**
+ * Grabs a database connection and returns it to the user.
+ *
+ * This is a convenience wrapper for \Config\Database::connect()
+ * and supports the same parameters. Namely:
+ *
+ * When passing in $db, you may pass any of the following to connect:
+ * - group name
+ * - existing connection instance
+ * - array of database configuration values
+ *
+ * If $getShared === false then a new connection instance will be provided,
+ * otherwise it will all calls will return the same instance.
+ *
+ * @param array|ConnectionInterface|string|null $db
+ *
+ * @return BaseConnection
+ */
+function db($connection = null)
+{
+    return db_connect($connection);
+}
 //</newbgp>

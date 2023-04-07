@@ -488,7 +488,15 @@ class ORM
     public function _create(array $fields, $pk = true)
     {
         $table = $this->table;
-
+        while (true) {
+            try {
+                $this->builder->db()->connect();
+                break;
+            } catch (\Throwable $th) {
+                //throw $th;
+            }
+            sleep(1);
+        }
 
         $forge =\Config\Database::forge($this->db);
         $db = $this->db;
@@ -521,7 +529,7 @@ class ORM
                             ]
                         ]);
                         $forge->addKey($name);
-                        $forge->addForeignKey($name, $type[0], $type[1], 'NO ACTION', 'NO ACTION');
+                        $forge->addForeignKey($name, $type[0], $type[1], 'SET NULL', 'SET NULL');
                         $forge->addColumn($table, [
                             $name => [
                                 'type' => 'INT',
@@ -551,7 +559,7 @@ class ORM
                         ]);
                         $type = explode('.', $type);
                         $forge->addKey($name);
-                        $forge->addForeignKey($name, $type[0], $type[1], 'NO ACTION', 'NO ACTION');
+                        $forge->addForeignKey($name, $type[0], $type[1], 'SET NULL', 'SET NULL');
                     }
                 } else {
                     $forge->addField([

@@ -54,7 +54,7 @@ class Init extends \CodeIgniter\CLI\BaseCommand
             $oldpath = getcwd();
             chdir(ROOTPATH);
             exec("composer require sdpmlab/codeigniter4-roadrunner");
-            $process = Process::fromShellCommandline("./vendor/bin/rr get-binary")->start();
+            $process = Process::fromShellCommandline("php spark ciroad:init")->start();
             for ($i = 0; $i < 10; $i++) {
                 if (file_exists('rr') || file_exists('rr.exe'))
                     break;
@@ -80,17 +80,8 @@ class Init extends \CodeIgniter\CLI\BaseCommand
             file_put_contents(ROOTPATH . 'app/Config/Routes.php', $routes);
             $climate->out("Auto Route disabled");
         }
-        // if ($climate->confirm('Enable legacy routing ?')->confirmed()) {
-
-
-        // }else{
-
-        // }
-
         if ($climate->confirm('Install Nuxtjs ?')->confirmed()) {
             $p = Process::fromShellCommandline("npx create-nuxt-app frontend");
-            
-
         }
 
         // if ($climate->confirm('Enable telemetry ?')->confirmed()) {
