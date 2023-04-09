@@ -69,20 +69,23 @@ class Init extends \CodeIgniter\CLI\BaseCommand
             chdir($oldpath);
             unset($oldpath);
         }
+        if ($climate->confirm('Enable cron job ?')->confirmed()) {
+            exec("composer require daycry/cronjob");
+            Process::fromShellCommandline("php spark cronjob:publish")->run();
+            $climate->out("Please read documentation in https://github.com/daycry/cronjob");
+        }
         if ($climate->confirm('Enable auto routing ?')->confirmed()) {
             $routes = file_get_contents(ROOTPATH . 'app/Config/Routes.php');
-            $routes = str_replace('// $routes->setAutoRoute(false);', '$routes->setAutoRoute(false);', $routes);
+            $routes = str_replace('// $routes->setAutoRoute(false);', '$routes->setAutoRoute(true);', $routes);
             file_put_contents(ROOTPATH . 'app/Config/Routes.php', $routes);
             $climate->out("Auto Route enabled");
         } else {
             $routes = file_get_contents(ROOTPATH . 'app/Config/Routes.php');
-            $routes = str_replace('$routes->setAutoRoute(false);', '// $routes->setAutoRoute(false);', $routes);
+            $routes = str_replace('$routes->setAutoRoute(true);', '// $routes->setAutoRoute(false);', $routes);
             file_put_contents(ROOTPATH . 'app/Config/Routes.php', $routes);
             $climate->out("Auto Route disabled");
         }
-        if ($climate->confirm('Install Nuxtjs ?')->confirmed()) {
-            $p = Process::fromShellCommandline("npx create-nuxt-app frontend");
-        }
+        
 
         // if ($climate->confirm('Enable telemetry ?')->confirmed()) {
         //     $climate->white("Telemetry enabled :)");

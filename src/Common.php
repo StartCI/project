@@ -26,6 +26,7 @@ use CodeIgniter\HTTP\ResponseInterface;
 use CodeIgniter\HTTP\URI;
 use CodeIgniter\Model;
 use CodeIgniter\Session\Session;
+use CodeIgniter\Startci\Db;
 use CodeIgniter\Test\TestLogger;
 use Config\App;
 use Config\Database;
@@ -857,10 +858,10 @@ function hidden($id, $value = "", $show = false)
  *
  * @param array|ConnectionInterface|string|null $db
  *
- * @return BaseConnection
+ * @return BaseConnection|Db
  */
 function db($connection = null)
 {
-    return db_connect($connection);
+    return new Db(db_connect($connection));
 }
 //</newbgp>
