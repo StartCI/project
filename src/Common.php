@@ -104,12 +104,13 @@ function jwt_decode($data)
  */
 function user($table = 'users')
 {
+    
     $id = null;
     if (session()->has('id'))
         $id = session()->get('id');
     try {
-        if (isset(getallheaders()['Authorization'])) {
-            $id = jwt_decode(substr(getallheaders()['Authorization'], strlen("Bearer ")));
+        if (Services::request()->hasHeader('Authorization')) {
+            $id = jwt_decode(Services::request()->getHeaderLine('Authorization'), strlen("Bearer ")));
             if (is_object($id))
                 $id = $id->id;
         }
