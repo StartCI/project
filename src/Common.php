@@ -21,6 +21,7 @@ use CodeIgniter\Debug\Timer;
 use CodeIgniter\Files\Exceptions\FileNotFoundException;
 use CodeIgniter\HTTP\Exceptions\HTTPException;
 use CodeIgniter\HTTP\RedirectResponse;
+use CodeIgniter\HTTP\Request;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use CodeIgniter\HTTP\URI;
@@ -51,7 +52,7 @@ function is_get()
 function form($key = null, $default = null)
 {
     $_JSON = [];
-    if (apache_request_headers()['Content-Type'] ?? '' == 'application/json')
+    if (Services::request()->getHeaderLine('Content-Type') == 'application/json')
         $_JSON = json_decode(file_get_contents('php://input'), true) ?? [];
     if ($key != null) {
         if (isset($_JSON[$key]))

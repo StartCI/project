@@ -27,8 +27,11 @@ class Db
 
     function __call($name, $params = [])
     {
-        if (method_exists($this->con, $name))
-            return $this->con->{$name}(...$params);
+        if (method_exists($this->con, $name)){
+            $r = $this->con->{$name}(...$params);
+            return $r;
+        }
+            
         return null;
     }
 
