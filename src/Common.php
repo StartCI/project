@@ -113,7 +113,7 @@ function user($table = 'users')
         $id = session()->get('id');
     try {
         if (Services::request()->hasHeader('Authorization')) {
-            $id = jwt_decode(Services::request()->getHeaderLine('Authorization'), strlen("Bearer ")));
+            $id = jwt_decode(Services::request()->getHeaderLine('Authorization'), strlen("Bearer "));
             if (is_object($id))
                 $id = $id->id;
         }
