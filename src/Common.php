@@ -41,17 +41,20 @@ use Firebase\JWT\Key;
 //<newbgp>
 function is_post()
 {
-    return ($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST';
+    $method = strtoupper(Services::request()->getMethod());
+    return ($method ?? 'GET') === 'POST';
 }
 
 function is_get()
 {
-    return ($_SERVER['REQUEST_METHOD'] ?? 'POST') === 'GET';
+    $method = strtoupper(Services::request()->getMethod());
+    return ($method ?? 'POST') === 'GET';
 }
 
 function form($key = null, $default = null)
 {
     $_JSON = [];
+    $_REQUEST = Services::request()->getPostGet();
     if (Services::request()->getHeaderLine('Content-Type') == 'application/json')
         $_JSON = json_decode(file_get_contents('php://input'), true) ?? [];
     if ($key != null) {
