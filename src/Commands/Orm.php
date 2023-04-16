@@ -317,20 +317,26 @@ class Orm extends BaseCommand
     function up()
     {
         cache()->delete('startci_models_create');
-        try {
-            $database = env('database.default.database');
-            $config = [
-                'hostname' => env('database.default.hostname'),
-                'username' => env('database.default.username'),
-                'password' => env('database.default.password'),
-                'DBDriver' => env('database.default.DBDriver'),
-                'DBPrefix' => env('database.default.DBPrefix'),
-                'port' => env('database.default.port'),
-            ];
-            \Config\Database::forge($config)->createDatabase($database, true);
-        } catch (\Throwable $th) {
-            //throw $th;
+        for ($i = 0; $i < 10; $i++) {
+
+            try {
+                $database = env('database.default.database');
+                $config = [
+                    'hostname' => env('database.default.hostname'),
+                    'username' => env('database.default.username'),
+                    'password' => env('database.default.password'),
+                    'DBDriver' => env('database.default.DBDriver'),
+                    'DBPrefix' => env('database.default.DBPrefix'),
+                    'port' => env('database.default.port'),
+                ];
+                \Config\Database::forge($config)->createDatabase($database, true);
+                break;
+            } catch (\Throwable $th) {
+                //throw $th;
+            }
+            sleep(1);
         }
+        
         $con = db_connect();
         // $con->simpleQuery("create database $database");
         $con->simpleQuery("SET foreign_key_checks = 0");
