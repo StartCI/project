@@ -62,7 +62,7 @@ function form($key = null, $default = null)
             return $_JSON[$key];
         return isset($_REQUEST[$key]) ? $_REQUEST[$key] : $default;
     } else {
-        return array_merge($_GET, $_POST, $_JSON);
+        return array_merge($_REQUEST, $_JSON);
     }
 }
 
