@@ -442,7 +442,7 @@ class ORM
      */
     public function _first(string $type = 'object')
     {
-        return $this->get()->getFirstRow($type);
+        return $this->builder->get()->getFirstRow($type);
     }
 
     /**
@@ -454,7 +454,7 @@ class ORM
      */
     public function _last(string $type = 'object')
     {
-        return $this->get()->getLastRow($type);
+        return $this->builder->get()->getLastRow($type);
     }
 
     /**
