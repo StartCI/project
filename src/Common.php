@@ -105,7 +105,7 @@ function jwt_decode($data)
 /**
  * @return object|\App\Models\Users
  */
-function user($table = 'users')
+function get_user($table = 'users')
 {
     
     $id = null;
