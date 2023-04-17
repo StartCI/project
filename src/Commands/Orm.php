@@ -336,11 +336,16 @@ class Orm extends BaseCommand
             }
             sleep(1);
         }
-        
-        $con = db_connect();
-        // $con->simpleQuery("create database $database");
-        $con->simpleQuery("SET foreign_key_checks = 0");
-
+        for ($i = 0; $i < 10; $i++) {
+            try {
+                $con = db_connect();
+                $con->simpleQuery("SET foreign_key_checks = 0");
+                break;
+            } catch (\Throwable $th) {
+            }
+            sleep(1);
+            
+        }
         $con->transBegin();
         $path = '../app/Models';
         $fqcns = array();
