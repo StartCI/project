@@ -51,12 +51,13 @@ function is_get()
     return ($method ?? 'POST') === 'GET';
 }
 
+
 function form($key = null, $default = null)
 {
     $_JSON = [];
     $_REQUEST = Services::request()->getPostGet();
     if (Services::request()->getHeaderLine('Content-Type') == 'application/json')
-        $_JSON = json_decode(file_get_contents('php://input'), true) ?? [];
+        $_JSON = json_decode(Services::request()->getBody(),true) ?? [];
     if ($key != null) {
         if (isset($_JSON[$key]))
             return $_JSON[$key];
