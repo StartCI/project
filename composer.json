@@ -1,7 +1,7 @@
 {
     "name": "startci/project",
     "type": "library",
-    "version": "1.1.1",
+    "version": "1.1.2",
     "description": "Addons for codeigniter 4",
     "homepage": "https://github.com/StartCI/project",
     "license": "MIT",

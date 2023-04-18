@@ -27,6 +27,7 @@ use CodeIgniter\HTTP\ResponseInterface;
 use CodeIgniter\HTTP\URI;
 use CodeIgniter\Model;
 use CodeIgniter\Session\Session;
+use CodeIgniter\Startci\Builder;
 use CodeIgniter\Startci\Db;
 use CodeIgniter\Test\TestLogger;
 use Config\App;
@@ -70,11 +71,11 @@ function form($key = null, $default = null)
 /**
  * 
  * @param type $name
- * @return \CodeIgniter\Database\BaseBuilder
+ * @return \CodeIgniter\Startci\Builder
  */
-function table(string $name, $db = null): \CodeIgniter\Database\BaseBuilder
+function table(string $name, $db = null): \CodeIgniter\Startci\Builder
 {
-    return db_connect($db)->table($name);
+    return new Builder($name,db_connect($db));
 }
 
 
@@ -868,6 +869,6 @@ function hidden($id, $value = "", $show = false)
  */
 function db($connection = null)
 {
-    return new Db(db_connect($connection));
+    return db_connect($connection);
 }
 //</newbgp>
