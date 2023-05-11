@@ -222,6 +222,16 @@ class Orm extends BaseCommand
     }
     function seed($p)
     {
+        for ($i = 0; $i < 10; $i++) {
+            try {
+                $con = @db_connect();
+                @$con->simpleQuery("SET foreign_key_checks = 0");
+                break;
+            } catch (\Throwable $th) {
+            }
+            sleep(1);
+
+        }
         $path = '../app/Models';
         $fqcns = array();
         $allFiles = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path));
@@ -338,13 +348,13 @@ class Orm extends BaseCommand
         }
         for ($i = 0; $i < 10; $i++) {
             try {
-                $con = db_connect();
-                $con->simpleQuery("SET foreign_key_checks = 0");
+                $con = @db_connect();
+                @$con->simpleQuery("SET foreign_key_checks = 0");
                 break;
             } catch (\Throwable $th) {
             }
             sleep(1);
-            
+
         }
         $con->transBegin();
         $path = '../app/Models';
