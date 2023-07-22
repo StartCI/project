@@ -8,7 +8,7 @@ use CodeIgniter\Traits\ConditionalTrait;
 class Builder extends BaseBuilder
 {
     use ConditionalTrait;
-    
+
     function whereRaw($cond)
     {
         $this->where($cond, null, false);
@@ -68,7 +68,7 @@ class Builder extends BaseBuilder
      *
      * @param boolean $mode Mode to set
      *
-     * @return BaseBuilder
+     * @return \CodeIgniter\Database\BaseBuilder
      */
     function def($values = [])
     {

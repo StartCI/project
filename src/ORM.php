@@ -58,23 +58,23 @@ use ReflectionProperty;
  * @method ORM offset(int $offset)
  * @method ORM resetQuery()
  * @method ORM def($values = [])
- * 
- * @mixin Database\BaseBuilder
+ *
+ * @mixin CodeIgniter\Startci\Builder
  */
 class ORM
 {
 
     /**
-     * 
-     * @var Database\BaseConnection
+     *
+     * @var \CodeIgniter\Database\BaseConnection
      */
     private $db;
 
     /**
-     * 
-     * @var Database\BaseBuilder
+     *
+     * @var CodeIgniter\Startci\Builder
      */
-    private $builder;
+    public $builder;
     private $class;
     private $table = '';
     private $autoload = [];
@@ -183,7 +183,7 @@ class ORM
             return $r;
         } else {
             if ($this->insert($d)) {
-                $r = $this->byId($this->builder->selectMax('id')->first()->id);
+                $r = $this->byId(db_connect()->insertID());
                 $this->id = $r->id;
                 return $r;
             } else {
@@ -254,13 +254,13 @@ class ORM
         $models_create[] = $rc->getName();
         cache()->save('startci_models_create', $models_create, 3600);
         $myClass = new $this->class();
-        if (!$prefix) {
-            $prefix = implode('_', array_map('strtolower', array_slice(explode('\\', $myClass->class), 2, -1)));
-            if ($prefix)
-                $prefix .= '_';
-        }
-        if ($prefix)
-            $this->builder->setTableName($prefix . $this->table);
+        // if (!$prefix) {
+        //     $prefix = implode('_', array_map('strtolower', array_slice(explode('\\', $myClass->class), 2, -1)));
+        //     if ($prefix)
+        //         $prefix .= '_';
+        // }
+        // if ($prefix)
+        //     $this->builder->setTableName($prefix . $this->table);
         $factory = DocBlockFactory::createInstance();
         $docblock = $factory->create($rc->getDocComment() ?? '');
         $tags = $docblock->getTagsByName('property');
@@ -318,7 +318,7 @@ class ORM
     }
 
     /**
-     * 
+     *
      * @param integer $id
      * @return self|parent|static
      */
@@ -344,7 +344,7 @@ class ORM
     }
 
     /**
-     * 
+     *
      * @return \Tightenco\Collect\Support\Collection|self|parent|static|array|array[static]
      */
     function get(): \Tightenco\Collect\Support\Collection
@@ -381,7 +381,7 @@ class ORM
 
 
     /**
-     * 
+     *
      * @return self|this|null|parent|static
      */
     function first()
@@ -406,7 +406,7 @@ class ORM
     }
 
     /**
-     * 
+     *
      * @param string $name
      * @param array $params
      * @return Database\BaseBuilder
@@ -481,7 +481,7 @@ class ORM
      * Sets a test mode status.
      *
      * @param array $fields Array of fields
-     * @param boolean $pk create or not pk 
+     * @param boolean $pk create or not pk
      *
      * @return $this
      */
