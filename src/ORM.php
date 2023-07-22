@@ -183,7 +183,7 @@ class ORM
             return $r;
         } else {
             if ($this->insert($d)) {
-                $r = $this->byId(db_connect()->insertID());
+                $r = $this->byId($this->db->insertID());
                 $this->id = $r->id;
                 return $r;
             } else {

@@ -9,10 +9,9 @@ use CodeIgniter\Database\ConnectionInterface;
 /**
  * Class Db
  * @package CodeIgniter\Startci
- * 
+ *
  * @implements ConnectionInterface<TConnection, TResult>
  * @mixin ConnectionInterface
- * @deprecated 1.0.0
  */
 class Db extends BaseConnection
 {
