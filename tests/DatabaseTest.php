@@ -159,7 +159,7 @@ class DatabaseTest extends TestCase
         $id = static::$db->insertID();
         assertNotFalse($id);
         assertIsNumeric($id);
-
+        //TODO: add tests
     }
     function test_update(): void
     {
