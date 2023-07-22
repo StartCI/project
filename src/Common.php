@@ -69,7 +69,7 @@ function form($key = null, $default = null)
 }
 
 /**
- * 
+ *
  * @param type $name
  * @return \CodeIgniter\Startci\Builder
  */
@@ -80,7 +80,7 @@ function table(string $name, $db = null): \CodeIgniter\Startci\Builder
 
 
 /**
- * 
+ *
  * @return \CodeIgniter\Validation\Validation
  */
 
@@ -109,7 +109,7 @@ function jwt_decode($data)
  */
 function get_user($table = 'users')
 {
-    
+
     $id = null;
     if (session()->has('id'))
         $id = session()->get('id');
@@ -134,7 +134,7 @@ function get_user($table = 'users')
 }
 
 /**
- * 
+ *
  * @param string $data
  * @return string|boolean
  */
@@ -169,7 +169,7 @@ class FakeCarbon
 }
 
 /**
- * 
+ *
  * @param string $data
  * @return \Carbon\Carbon
  */
@@ -386,7 +386,7 @@ function smarty($view, $data = [])
 }
 
 /**
- * 
+ *
  * @return \CodeIgniter\JS
  */
 function js(): \CodeIgniter\JS
@@ -395,7 +395,7 @@ function js(): \CodeIgniter\JS
 }
 
 /**
- * 
+ *
  * @param type $selector
  * @return \CodeIgniter\Jquery
  */
@@ -405,7 +405,7 @@ function jquery($selector = ''): \CodeIgniter\Jquery
 }
 
 /**
- * 
+ *
  * @param type $varname
  * @return \CodeIgniter\Vue
  */
@@ -415,7 +415,7 @@ function vue($varname = 'vue'): \CodeIgniter\Vue
 }
 
 /**
- * 
+ *
  * @return \Faker\Generator
  */
 function faker($locale = null)
@@ -495,10 +495,10 @@ function button($texto, $plus = "", $size = 3)
 }
 
 /**
- * 
+ *
  * @param type $id identificação
  * @param type $texto Texto
- * @param type $grupo Agrupamento 
+ * @param type $grupo Agrupamento
  * @param type $plus atributos adicionais
  * @param type $size colunas
  * @return type
