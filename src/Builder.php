@@ -27,27 +27,30 @@ class Builder extends BaseBuilder
     {
         return $this->result($type);
     }
-    function save($data)
-    {
-        if(isset($data['id'])){
-            foreach ($data as $key => $value) {
-                if(is_array($value)){
-                    $data[$key] = table($key)->save($value);
-                }
-            }
-            $this->where('id',$data['id'])->update($data);
-            return $this->where('id',$data['id'])->first();
-        }else{
-            foreach ($data as $key => $value) {
-                if(is_array($value)){
-                    $data[$key] = table($key)->save($value);
-                }
-            }
-            $this->insert($data);
-            $data['id'] = $this->insertID();
-            return $this->where('id',$data['id'])->first();
-        }
-    }
+    // function save($data)
+    // {
+    //     $tables = $this->db()->listTables();
+    //     foreach ($data as $key => $value) {
+    //         if(is_array($value) && in_array($key,$tables)){
+    //             if(is_array($value)){
+    //                 foreach ($value as $k => $v) {
+    //                     table($key)->save($v);
+    //                 }
+    //             }else{
+    //                 table($key)->save($value);
+    //             }
+    //             unset($data[$key]);
+    //         }
+    //     }
+    //     if(isset($data['id'])){
+    //         $this->where('id',$data['id'])->update($data);
+    //         return $this->where('id',$data['id'])->first();
+    //     }else{
+    //         $this->insert($data);
+    //         $data['id'] = $this->insertID();
+    //         return $this->where('id',$data['id'])->first();
+    //     }
+    // }
     /**
      * Sets a test mode status.
      *

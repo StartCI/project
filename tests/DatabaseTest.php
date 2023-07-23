@@ -208,13 +208,4 @@ class DatabaseTest extends TestCase
         assertEquals($total, 1);
     }
 
-    function test_save_insert()
-    {
-
-    }
-    function test_save_update()
-    {
-
-    }
-
 }
