@@ -4,10 +4,13 @@ use CodeIgniter\Startci\Builder;
 use Config\Database;
 use PHPUnit\Framework\TestCase;
 use function PHPUnit\Framework\assertContains;
+use function PHPUnit\Framework\assertCount;
 use function PHPUnit\Framework\assertEquals;
 use function PHPUnit\Framework\assertInstanceOf;
 use function PHPUnit\Framework\assertIsNumeric;
+use function PHPUnit\Framework\assertNotEquals;
 use function PHPUnit\Framework\assertNotFalse;
+use function PHPUnit\Framework\assertObjectEquals;
 use function PHPUnit\Framework\assertTrue;
 
 class DatabaseTest extends TestCase
@@ -17,6 +20,10 @@ class DatabaseTest extends TestCase
      */
     static $db;
     function setUp(): void
+    {
+
+    }
+    function tearDown(): void
     {
 
     }
@@ -150,7 +157,7 @@ class DatabaseTest extends TestCase
     }
     function test_insert(): void
     {
-        table('users',static::$db)->insert([
+        table('users', static::$db)->insert([
             'name' => 'test',
             'age' => 1,
             'email' => 'test@example.com',
@@ -159,17 +166,53 @@ class DatabaseTest extends TestCase
         $id = static::$db->insertID();
         assertNotFalse($id);
         assertIsNumeric($id);
-        //TODO: add tests
+        foreach (range(1, 10) as $key => $value) {
+            table('user_cnames', static::$db)->insert([
+                'user' => $id,
+                'name' => 'test',
+            ]);
+            $id_user_cnames = static::$db->insertID();
+            assertNotFalse($id_user_cnames);
+            assertIsNumeric($id_user_cnames);
+        }
+    }
+    function test_select(): void
+    {
+        $db = static::$db;
+        $resultado1 = $db->table('users')->select('id, name, age, email')->get()->getResult();
+        $resultado2 = $db->table('users')->select('id, name, age, email')->get()->getFirstRow();
+        assertEquals(table('users', static::$db)->select('id,name,age,email')->rs(), $resultado1);
+        assertEquals(table('users', static::$db)->select('id,name,age,email')->first(), $resultado2);
+        assertEquals(table('users', static::$db)->select('id,name,age,email')->last(), $resultado2);
+
     }
     function test_update(): void
     {
-
+        $resultado1 = table('users', static::$db)->like('name', 'felipe')->select('id,name')->rs();
+        table('users', static::$db)->like('name', 'tes')->update([
+            'name' => 'felipe',
+        ]);
+        $resultado2 = table('users', static::$db)->like('name', 'felipe')->select('id,name')->rs();
+        assertNotEquals($resultado1, $resultado2);
     }
     function test_delete(): void
     {
+        table('users', static::$db)->insert([
+            'name' => 'test',
+            'age' => 1,
+            'email' => 'test@example.com',
+            'password' => 'test',
+        ]);
+        table('users', static::$db)->where('id', 1)->delete();
+        $total = table('users', static::$db)->selectCount('id', 'total')->first()->total;
+        assertEquals($total, 1);
+    }
+
+    function test_save_insert()
+    {
 
     }
-    function test_select(): void
+    function test_save_update()
     {
 
     }

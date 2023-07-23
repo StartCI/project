@@ -4,6 +4,7 @@ namespace CodeIgniter\Startci;
 
 use \CodeIgniter\Database\BaseBuilder;
 use CodeIgniter\Traits\ConditionalTrait;
+use stdClass;
 
 class Builder extends BaseBuilder
 {
@@ -26,20 +27,39 @@ class Builder extends BaseBuilder
     {
         return $this->result($type);
     }
-
+    function save($data)
+    {
+        if(isset($data['id'])){
+            foreach ($data as $key => $value) {
+                if(is_array($value)){
+                    $data[$key] = table($key)->save($value);
+                }
+            }
+            $this->where('id',$data['id'])->update($data);
+            return $this->where('id',$data['id'])->first();
+        }else{
+            foreach ($data as $key => $value) {
+                if(is_array($value)){
+                    $data[$key] = table($key)->save($value);
+                }
+            }
+            $this->insert($data);
+            $data['id'] = $this->insertID();
+            return $this->where('id',$data['id'])->first();
+        }
+    }
     /**
      * Sets a test mode status.
      *
      * @param boolean $type Mode to set
      *
-     * @return mixed
+     * @return boolean|stdClass[]|$type[]
      */
     public function result(string $type = 'object')
     {
-
         $get = $this->get();
         if ($get)
-            return $this->get()->getResult($type);
+            return $get->getResult($type);
         else {
             return false;
         }
@@ -108,7 +128,7 @@ class Builder extends BaseBuilder
             sleep(1);
         }
 
-        $forge =\Config\Database::forge($this->db);
+        $forge = \Config\Database::forge($this->db);
         $db = $this->db;
         $tables = $db->listTables();
         $f = [];
@@ -197,5 +217,9 @@ class Builder extends BaseBuilder
             $forge->createTable($table, true);
         }
         return $this;
+    }
+    function __call($name, $arguments)
+    {
+        return $this->$name(...$arguments);
     }
 }
