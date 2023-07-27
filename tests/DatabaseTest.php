@@ -1,7 +1,5 @@
 <?php
 use CodeIgniter\Database\BaseConnection;
-use CodeIgniter\Startci\Builder;
-use Config\Database;
 use PHPUnit\Framework\TestCase;
 use function PHPUnit\Framework\assertContains;
 use function PHPUnit\Framework\assertCount;
@@ -10,8 +8,7 @@ use function PHPUnit\Framework\assertInstanceOf;
 use function PHPUnit\Framework\assertIsNumeric;
 use function PHPUnit\Framework\assertNotEquals;
 use function PHPUnit\Framework\assertNotFalse;
-use function PHPUnit\Framework\assertObjectEquals;
-use function PHPUnit\Framework\assertTrue;
+
 
 class DatabaseTest extends TestCase
 {
