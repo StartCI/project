@@ -1,43 +1,80 @@
+<p align="center">
+<img src="https://raw.githubusercontent.com/StartCI/StartCI/main/logo%20ci.png" />
+</p>
+
 # StartCI - CodeIgniter 4 Enhancement Project
+
+### Table of Contents
+
+1. [Introduction](#introduction)
+2. [Requirements](#requirements)
+3. [Installation](#installation)
+4. [Usage](#usage)
+<!-- 5. [Contributing](#contributing)
+6. [Support](#support)
+7. [StartCI Documentation](#startci-documentation) -->
 
 ## Introduction
 
 Welcome to the documentation of the "StartCI" project - a powerful extension for the CodeIgniter 4 framework!
 
+## Requirements
+
+Before you start using "StartCI," make sure you have the following prerequisites:
+
+- PHP 8.1 or higher
+- CodeIgniter 4 installed in your development environment
+- Composer installed to manage project dependencies
+
+
 ### About the Project
 
 "StartCI" is an advanced library designed to enhance the capabilities of the renowned PHP framework, CodeIgniter 4. Developed to provide an efficient and versatile development experience, this project offers a collection of functions, libraries, and additional resources to take your web applications to new heights.
 
-### Objective
+### Installation
 
-The main objective of "StartCI" is to simplify the creation of robust web applications while adhering to the core principles of CodeIgniter 4 - simplicity and performance. Through a carefully crafted set of features and functionalities, the project aims to streamline development, reduce repetitive efforts, and facilitate the management of complex tasks.
+To install the "StartCI" project, you need to add the following configuration to your `composer.json` file:
 
-### Key Features
+```json
+"repositories": [
+    {
+        "type": "git",
+        "url": "https://github.com/StartCI/project.git",
+        "reference": "main"
+    }
+]
+```
 
-- **Additional Functionality**: "StartCI" provides a set of extra features, including helpers, validators, libraries, and drivers that can be easily integrated into your existing applications.
+After adding the repository, you can run the following command in your project's root directory:
 
-- **Custom Modules**: Leverage CodeIgniter 4's extensibility by including custom modules that complement the framework's native capabilities.
+```bash
+composer require startci/project:dev-main
+```
+To initialize the "StartCI" project and generate the necessary files and configurations, run the following command in your project's root directory:
 
-- **Seamless Integration**: The library is designed to seamlessly integrate with CodeIgniter 4, ensuring a smooth and conflict-free development experience.
+```bash
+php spark startci:init
+```
 
-- **Comprehensive Documentation**: This detailed documentation provides step-by-step instructions, code examples, and complete references to help you make the most out of "StartCI."
+### Usage
 
-## Requirements
 
-To use "StartCI," you'll need to have CodeIgniter 4 installed in your development environment. Make sure you're using a compatible version with this project.
+It seems like you are describing a custom implementation of the "table" method with various functionalities. Unfortunately, as of my knowledge cutoff in September 2021, there is no built-in method like this in CodeIgniter 4. However, it is possible that such a method might have been added or implemented in a custom library or extension.
 
-## Installation
+Let's clarify the examples you provided:
 
-Installing "StartCI" is quick and straightforward. Follow the provided steps in the installation section to easily incorporate the library into your existing project.
+```php
+table('test')->create([
+    'field' => 'text'
+]);
+// Creates the 'test' table with a column named 'field' of type 'text'
+table('test')->def();
+// Returns an array with the definition of the 'test' table like ['field' => null]
+table('test')->rs();
+// Returns an array with all the rows from the 'test' table as objects
+table('test')->first();
+// Returns the first row from the 'test' table as an object like {field: 'value'}
+```
 
-## Contribution
-
-This project is an open-source initiative, and we encourage enthusiasts and developers to contribute improvements, bug fixes, and new features. Please refer to the contribution section to learn how to get involved.
-
-## Support
-
-If you encounter issues while using "StartCI" or have questions about its implementation, don't hesitate to check the support section, where you can find helpful resources to address your queries.
-
-## Let's Get Started!
-
-Now that you have an overview of the "StartCI" project, it's time to dive into its implementation and explore the various features it offers. Proceed to the installation section to start using this powerful extension for CodeIgniter 4!
+#### More Examples
+For additional examples and usage details, check out the "test" folder in the "StartCI" project repository. There, you can find practical examples and demonstrations of various functionalities provided by "StartCI."
