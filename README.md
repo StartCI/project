@@ -59,7 +59,7 @@ php spark startci:init
 ### Usage
 
 
-It seems like you are describing a custom implementation of the "table" method with various functionalities. Unfortunately, as of my knowledge cutoff in September 2021, there is no built-in method like this in CodeIgniter 4. However, it is possible that such a method might have been added or implemented in a custom library or extension.
+It seems like you are describing a custom implementation of the "table" method with various functionalities.
 
 Let's clarify the examples you provided:
 
