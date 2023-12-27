@@ -32,6 +32,7 @@ class DatabaseTest extends TestCase
     }
     function test_create_table(): void
     {
+
         table('users', static::$db)->create([
             'name' => 'text',
             'age' => 'integer',
@@ -56,7 +57,7 @@ class DatabaseTest extends TestCase
             ],
             [
                 "name" => "name",
-                "type" => "text",
+                "type" => "TEXT",
                 "max_length" => null,
                 "default" => null,
                 "primary_key" => false,
@@ -64,7 +65,7 @@ class DatabaseTest extends TestCase
             ],
             [
                 "name" => "age",
-                "type" => "integer",
+                "type" => "INTEGER",
                 "max_length" => null,
                 "default" => null,
                 "primary_key" => false,
@@ -72,7 +73,7 @@ class DatabaseTest extends TestCase
             ],
             [
                 "name" => "email",
-                "type" => "text",
+                "type" => "TEXT",
                 "max_length" => null,
                 "default" => null,
                 "primary_key" => false,
@@ -80,7 +81,7 @@ class DatabaseTest extends TestCase
             ],
             [
                 "name" => "password",
-                "type" => "text",
+                "type" => "TEXT",
                 "max_length" => null,
                 "default" => null,
                 "primary_key" => false,
@@ -123,7 +124,7 @@ class DatabaseTest extends TestCase
                 ],
                 [
                     "name" => "name",
-                    "type" => "text",
+                    "type" => "TEXT",
                     "max_length" => null,
                     "default" => null,
                     "primary_key" => false,
@@ -148,8 +149,9 @@ class DatabaseTest extends TestCase
             ],
             json_decode(json_encode($table_user_cnames_fields), true)
         );
-        assertContains('users', $tables);
-        assertContains('user_cnames', $tables);
+        $prefix = static::$db->getPrefix();
+        assertContains($prefix . 'users', $tables);
+        assertContains($prefix . 'user_cnames', $tables);
 
     }
     function test_insert(): void
