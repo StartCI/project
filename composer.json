@@ -32,6 +32,7 @@
     },
     "autoload": {
         "psr-4": {
+            "CodeIgniter\\": "system/",
             "CodeIgniter\\Startci\\": "src/"
         },
         "files": [

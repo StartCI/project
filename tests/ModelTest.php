@@ -3,14 +3,21 @@ use PHPUnit\Framework\TestCase;
 class ModelTest extends TestCase
 {
    /**
-     * @var BaseConnection
+     * @var \CodeIgniter\Database\BaseConnection
      */
     static $db;
     function setUp(): void {
         self::$db = db();
     }
+    function test_create(): void{
+        command('startci:orm up');
+        $db = static::$db;
+        xdebug_break();
+    }
     function test_up(): void{
-
+        command('startci:orm up');
+        $db = static::$db;
+        xdebug_break();
     }
     function test_seed(): void{
 
