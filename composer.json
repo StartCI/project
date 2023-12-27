@@ -28,7 +28,7 @@
         "codeigniter4/framework": "^4",
         "phpunit/phpunit": "*",
         "squizlabs/php_codesniffer": "^3",
-        "pestphp/pest": "^2.9"
+        "pestphp/pest": "^2"
     },
     "autoload": {
         "psr-4": {

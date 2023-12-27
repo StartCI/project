@@ -13,17 +13,3 @@
  *
  * @see: https://codeigniter4.github.io/CodeIgniter4/
  */
-
-/**
- * @return \App\Models\Usuarios
- */
-function model_usuarios(){
-  return new \App\Models\Usuarios();
-}
-
-/**
- * @return \App\Models\Usuarios\Tokens
- */
-function model_usuario_tokens(){
-  return new \App\Models\Usuarios\Tokens();
-}

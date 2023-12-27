@@ -2,9 +2,12 @@
 use PHPUnit\Framework\TestCase;
 class ModelTest extends TestCase
 {
-
+   /**
+     * @var BaseConnection
+     */
+    static $db;
     function setUp(): void {
-
+        self::$db = db();
     }
     function test_up(): void{
 
