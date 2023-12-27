@@ -13,3 +13,11 @@
  *
  * @see: https://codeigniter4.github.io/CodeIgniter4/
  */
+
+/** 
+ * @return \App\Models\Teste
+ */
+function model_teste(){
+  return new \App\Models\Teste();
+}
+
