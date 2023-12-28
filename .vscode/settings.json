@@ -1,4 +1,5 @@
 {
     "nuxt.isNuxtApp": false,
-    "php.version": "8.2"
+    "php.version": "8.2",
+    "yaml.schemaStore.enable": false
 }

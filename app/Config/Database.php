@@ -51,14 +51,14 @@ class Database extends Config
      */
     public array $tests = [
         'DSN'         => '',
-        'hostname'    => '127.0.0.1',
-        'username'    => 'postgres',
-        'password'    => '123',
-        'database'    => 'startci',
+        'hostname'    => 'db',
+        'username'    => 'db',
+        'password'    => 'db',
+        'database'    => 'db',
         // 'DBDriver'    => 'SQLite3',
-        // 'DBDriver'    => 'MySQLi',
-        'DBDriver'    => 'Postgre',
-        'DBPrefix'    => 'db_',  // Needed to ensure we're working correctly with prefixes live. DO NOT REMOVE FOR CI DEVS
+        'DBDriver'    => 'MySQLi',
+        // 'DBDriver'    => 'Postgre',
+        'DBPrefix'    => '',  // Needed to ensure we're working correctly with prefixes live. DO NOT REMOVE FOR CI DEVS
         'pConnect'    => false,
         'DBDebug'     => true,
         'charset'     => 'utf8',
