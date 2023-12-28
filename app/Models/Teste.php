@@ -5,6 +5,7 @@ namespace App\Models;
 /**
  * @property integer $id AutoIncrement
  * @property string $nome
+ * @property string $fit
  * @property string $created_at
  * @property string $updated_at
  * @table teste

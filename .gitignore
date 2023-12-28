@@ -1,4 +1,5 @@
 vendor
 composer.lock
 .vscode/settings.json
-writable/debugbar/debugbar_1703742309.734217.json
+writable/debugbar/*.json
+*.log
