@@ -10,7 +10,10 @@ class Home extends Controller
 {
     public function index()
     {
-        
-        return 'oi';
+        $nome = faker();
+        // table('teste')->replace([
+        //     'nome' => $nome->name()
+        // ]);
+        return $this->response->setJSON(model_teste()->get());
     }
 }

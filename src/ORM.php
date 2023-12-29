@@ -350,8 +350,6 @@ class ORM
     function get(): \Tightenco\Collect\Support\Collection
     {
         try {
-            //code...
-
             $autoload = $this->get_autoload();
             $r = collect($this->builder->get()->getResult())->map(function ($v, $k) use ($autoload) {
                 $class = $this->get_class();

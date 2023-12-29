@@ -3,3 +3,5 @@ composer.lock
 .vscode/settings.json
 writable/debugbar/*.json
 *.log
+.env
+writable/cache/startci_models_create
