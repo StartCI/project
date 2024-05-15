@@ -28,7 +28,8 @@
         "codeigniter4/framework": "^4",
         "phpunit/phpunit": "*",
         "squizlabs/php_codesniffer": "^3",
-        "pestphp/pest": "^2"
+        "pestphp/pest": "^2",
+        "pestphp/pest-plugin-drift": "^2.5"
     },
     "autoload": {
         "psr-4": {

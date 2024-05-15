@@ -116,13 +116,13 @@ class Orm extends BaseCommand
         file_put_contents("../app/Models/$className.php", $file);
         $file = '';
         $file = file_get_contents('../app/Common.php') . PHP_EOL;;
-        $file .= "/** " . PHP_EOL;
-        $file .= " * @return \App\Models\\" . $className . PHP_EOL;
-        $file .= " */" . PHP_EOL;
-        $file .= "function model_$table(){" . PHP_EOL;
-        $file .= "  return new \App\Models\\" . $className . "();" . PHP_EOL;
-        $file .= "}" . PHP_EOL . PHP_EOL;
-        file_put_contents('../app/Common.php', $file);
+        // $file .= "/** " . PHP_EOL;
+        // $file .= " * @return \App\Models\\" . $className . PHP_EOL;
+        // $file .= " */" . PHP_EOL;
+        // $file .= "function model_$table(){" . PHP_EOL;
+        // $file .= "  return new \App\Models\\" . $className . "();" . PHP_EOL;
+        // $file .= "}" . PHP_EOL . PHP_EOL;
+        // file_put_contents('../app/Common.php', $file);
     }
 
     function down()

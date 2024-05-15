@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     bootstrap="vendor/codeigniter4/framework/system/Test/bootstrap.php"
     backupGlobals="false"
     colors="true"
@@ -25,16 +25,16 @@
         <const name="APPPATH" value="./app/"/>
         <!-- <const name="WRITEPATH" value="./public/"/> -->
         <const name="SYSTEMPATH" value="./vendor/codeigniter4/framework/system/"/>
-        
+
         <!-- Database configuration -->
-        <!-- Uncomment to provide your own database for testing
-        <env name="database.tests.hostname" value="localhost"/>
-        <env name="database.tests.database" value="tests"/>
-        <env name="database.tests.username" value="tests_user"/>
-        <env name="database.tests.password" value=""/>
+
+        <!-- <env name="database.tests.hostname" value="localhost"/>
+        <env name="database.tests.database" value="startci"/>
+        <env name="database.tests.username" value="root"/>
+        <env name="database.tests.password" value="3af8601b46ab39f0"/>
         <env name="database.tests.DBDriver" value="MySQLi"/>
-        <env name="database.tests.DBPrefix" value="tests_"/>
-        -->
+        <env name="database.tests.DBPrefix" value=""/> -->
+
     </php>
     <source>
         <include>

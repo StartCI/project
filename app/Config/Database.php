@@ -56,7 +56,7 @@ class Database extends Config
         'password'    => 'db',
         'database'    => 'db',
         // 'DBDriver'    => 'SQLite3',
-        'DBDriver'    => 'MySQLi',
+        // 'DBDriver'    => 'MySQLi',
         // 'DBDriver'    => 'Postgre',
         'DBPrefix'    => '',  // Needed to ensure we're working correctly with prefixes live. DO NOT REMOVE FOR CI DEVS
         'pConnect'    => false,

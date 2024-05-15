@@ -1,44 +1,35 @@
 <?php
-use PHPUnit\Framework\TestCase;
-class ModelTest extends TestCase
-{
-   /**
-     * @var \CodeIgniter\Database\BaseConnection
-     */
-    static $db;
-    function setUp(): void {
-        self::$db = db();
-    }
-    function test_create(): void{
-        command('startci:orm up');
-        $db = static::$db;
-        xdebug_break();
-    }
-    function test_up(): void{
-        command('startci:orm up');
-        $db = static::$db;
-        xdebug_break();
-    }
-    function test_seed(): void{
 
-    }
+beforeEach(function () {
+    self::$db = db();
+});
 
-    function test_connection(): void{
+test('create', function () {
+    command('startci:orm up');
+    $db = static::$db;
+    xdebug_break();
+});
 
-    }
-    function test_insert(): void{
+test('up', function () {
+    command('startci:orm up');
+    $db = static::$db;
+    xdebug_break();
+});
 
-    }
-    function test_update(): void{
+test('seed', function () {
+});
 
-    }
-    function test_delete(): void{
+test('connection', function () {
+});
 
-    }
-    function test_select(): void{
+test('insert', function () {
+});
 
-    }
+test('update', function () {
+});
 
+test('delete', function () {
+});
 
-
-}
+test('select', function () {
+});
