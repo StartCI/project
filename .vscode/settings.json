@@ -1,5 +1,6 @@
 {
     "nuxt.isNuxtApp": false,
     "php.version": "8.1",
-    "yaml.schemaStore.enable": false
+    "yaml.schemaStore.enable": false,
+    "php.suggest.basic": false
 }

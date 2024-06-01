@@ -869,7 +869,7 @@ function hidden($id, $value = "", $show = false)
  */
 function db($connection = null)
 {
-    return db_connect($connection);
+    return new Db(db_connect($connection));
 }
 if(!function_exists('xdebug_break')){
     function xdebug_break(){}

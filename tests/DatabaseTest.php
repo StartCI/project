@@ -41,6 +41,7 @@ test('create table sqlite', function () {
 
     $db = $this->sqlite;
     xdebug_break();
+
     $db->table('users')->create([
         'name' => 'text',
         'age' => 'integer',

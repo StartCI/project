@@ -12,20 +12,25 @@ use CodeIgniter\Database\ConnectionInterface;
  *
  * @implements ConnectionInterface<TConnection, TResult>
  * @mixin ConnectionInterface
+ * @mixin BaseConnection
  */
-class Db extends BaseConnection
+class Db
 {
-
     /**
-     * @var \CodeIgniter\Database\Connection
+     * @var \CodeIgniter\Database\BaseConnection
      */
     var $con = null;
 
     function __construct(\CodeIgniter\Database\BaseConnection $db = null)
     {
-        $this->con = $db->where();
+        $this->con = $db->table();
     }
-
+    /**
+     * Summary of __call
+     * @param mixed $name
+     * @param mixed $params
+     * @return mixed
+     */
     function __call($name, $params = [])
     {
         if (method_exists($this->con, $name)) {
