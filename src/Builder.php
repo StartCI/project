@@ -5,15 +5,50 @@ namespace CodeIgniter\Startci;
 use \CodeIgniter\Database\BaseBuilder;
 use CodeIgniter\Traits\ConditionalTrait;
 use stdClass;
-
-class Builder extends BaseBuilder
+/**
+ * Class Db
+ * @package CodeIgniter\Startci
+ *
+ * @mixin BaseBuilder
+ */
+class Builder 
 {
-    use ConditionalTrait;
+    /**
+     * @var \CodeIgniter\Database\BaseBuilder
+     */
+    var $builder = null;
+    /**
+     * @var \CodeIgniter\Database\BaseConnection
+     */
+    var $con = null;
 
-    function whereRaw($cond)
+    function __construct($db = null,$builder = null){
+        $this->con = $db;
+        $this->builder = $builder;
+    }
+    
+    /**
+     * Summary of __call
+     * @param mixed $name
+     * @param mixed $params
+     * @return mixed
+     */
+    function __call($name, $params = [])
     {
-        $this->where($cond, null, false);
-        return $this;
+        if (method_exists($this->builder, $name)) {
+            $r = $this->con->{$name}(...$params);
+            if (gettype($r) == 'object') {
+                if (class_basename($r) == 'Builder') {
+                    return new Builder($this->con, $r);
+                } else {
+                    return $r;
+                }
+            } else {
+                return $r;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -101,8 +136,8 @@ class Builder extends BaseBuilder
      */
     function def($values = [])
     {
-        $table = $this->tableName;
-        $db = $this->db();
+        $table = $this->builder->getTable();
+        $db = $this->con;
         $v = [];
         foreach ($db->getFieldNames($table) as $key => $value) {
             $v[$value] = (!isset($values[$value])) ? null : $values[$value];
@@ -120,10 +155,11 @@ class Builder extends BaseBuilder
      */
     public function create(array $fields, $pk = true)
     {
-        $table = $this->tableName;
+        $table = $this->builder->getTable();
+        // xdebug_break();
         while (true) {
             try {
-                $this->db()->connect();
+                $this->con->connect();
                 break;
             } catch (\Throwable $th) {
                 //throw $th;
@@ -131,8 +167,8 @@ class Builder extends BaseBuilder
             sleep(1);
         }
 
-        $forge = \Config\Database::forge($this->db);
-        $db = $this->db;
+        $forge = \Config\Database::forge($this->con);
+        $db = $this->con;
         $tables = $db->listTables();
         $f = [];
         foreach ($fields as $k => $field) {
@@ -221,8 +257,5 @@ class Builder extends BaseBuilder
         }
         return $this;
     }
-    function __call($name, $arguments)
-    {
-        return $this->$name(...$arguments);
-    }
+ 
 }

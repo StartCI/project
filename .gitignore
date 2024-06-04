@@ -6,3 +6,4 @@ writable/debugbar/*.json
 .env
 writable/cache/startci_models_create
 db.sqlite
+writable/db.sqlite
