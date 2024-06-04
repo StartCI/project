@@ -156,7 +156,6 @@ class Builder
     public function create(array $fields, $pk = true)
     {
         $table = $this->builder->getTable();
-        // xdebug_break();
         while (true) {
             try {
                 $this->con->connect();
