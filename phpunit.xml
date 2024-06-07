@@ -28,12 +28,12 @@
 
         <!-- Database configuration -->
 
-        <!-- <env name="database.tests.hostname" value="localhost"/>
-        <env name="database.tests.database" value="startci"/>
-        <env name="database.tests.username" value="root"/>
-        <env name="database.tests.password" value="3af8601b46ab39f0"/>
-        <env name="database.tests.DBDriver" value="MySQLi"/>
-        <env name="database.tests.DBPrefix" value=""/> -->
+        <env name="database.default.hostname" value="db.sqlite"/>
+        <env name="database.default.database" value="db.sqlite"/>
+        <!-- <env name="database.tests.username" value="root"/> -->
+        <!-- <env name="database.tests.password" value="3af8601b46ab39f0"/> -->
+        <env name="database.default.DBDriver" value="SQLite3"/>
+        <!-- <env name="database.tests.DBPrefix" value=""/> -->
 
     </php>
     <source>

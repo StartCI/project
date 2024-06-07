@@ -10,6 +10,9 @@ use function PHPUnit\Framework\assertNotEquals;
 use function PHPUnit\Framework\assertNotFalse;
 
 beforeEach(function () {
+    if (file_exists('writable/db.sqlite')) {
+        unlink('writable/db.sqlite');
+    }
     $this->sqlite = db([
         'DBDriver' => 'SQLite3',
         'hostname' => 'db.sqlite',
@@ -30,15 +33,13 @@ beforeEach(function () {
         'password' => '3af8601b46ab39f0',
     ]);
 });
-afterEach(function () {
-});
 test('connection', function () {
     expect($this->sqlite->con)->toBeInstanceOf(CodeIgniter\Database\SQLite3\Connection::class);
     expect($this->mysql->con)->toBeInstanceOf(CodeIgniter\Database\MySQLi\Connection::class);
     expect($this->postgres->con)->toBeInstanceOf(CodeIgniter\Database\Postgre\Connection::class);
 
-})->only();
-test('create table sqlite', function () {
+});
+test('sqlite', function () {
 
     $sqlite = db([
         'DBDriver' => 'SQLite3',
@@ -46,7 +47,6 @@ test('create table sqlite', function () {
         'database' => 'db.sqlite',
     ]);
     $db = $sqlite;
-    
     $db->table('users')->create([
         'name' => 'text',
         'age' => 'integer',
@@ -64,51 +64,123 @@ test('create table sqlite', function () {
     $prefix = $db->getPrefix();
     assertContains($prefix . 'users', $tables);
     assertContains($prefix . 'user_cnames', $tables);
-})->only();
-test('insert', function () {
-    table('users', static::$db)->insert([
+
+    $db->table('users')->insert([
         'name' => 'test',
         'age' => 1,
         'email' => 'test@example.com',
         'password' => 'test',
     ]);
-    $id = static::$db->insertID();
+    $id = $db->insertID();
     assertNotFalse($id);
     assertIsNumeric($id);
     foreach (range(1, 10) as $key => $value) {
-        table('user_cnames', static::$db)->insert([
+        $db->table('user_cnames')->insert([
             'user' => $id,
             'name' => 'test',
         ]);
-        $id_user_cnames = static::$db->insertID();
+        $id_user_cnames = $db->insertID();
         assertNotFalse($id_user_cnames);
         assertIsNumeric($id_user_cnames);
     }
-});
-test('select', function () {
-    $db = static::$db;
+
     $resultado1 = $db->table('users')->select('id, name, age, email')->get()->getResult();
     $resultado2 = $db->table('users')->select('id, name, age, email')->get()->getFirstRow();
-    assertEquals(table('users', static::$db)->select('id,name,age,email')->rs(), $resultado1);
-    assertEquals(table('users', static::$db)->select('id,name,age,email')->first(), $resultado2);
-    assertEquals(table('users', static::$db)->select('id,name,age,email')->last(), $resultado2);
-});
-test('update', function () {
-    $resultado1 = table('users', static::$db)->like('name', 'felipe')->select('id,name')->rs();
-    table('users', static::$db)->like('name', 'tes')->update([
+    assertEquals($db->table('users')->select('id,name,age,email')->rs(), $resultado1);
+    assertEquals($db->table('users')->select('id,name,age,email')->first(), $resultado2);
+    assertEquals($db->table('users')->select('id,name,age,email')->last(), $resultado2);
+
+    $resultado1 = $db->table('users')->like('name', 'felipe')->select('id,name')->rs();
+    $db->table('users')->like('name', 'tes')->update([
         'name' => 'felipe',
     ]);
-    $resultado2 = table('users', static::$db)->like('name', 'felipe')->select('id,name')->rs();
+    $resultado2 = $db->table('users')->like('name', 'felipe')->select('id,name')->rs();
     assertNotEquals($resultado1, $resultado2);
-});
-test('delete', function () {
-    table('users', static::$db)->insert([
+
+    $db->table('users')->insert([
         'name' => 'test',
         'age' => 1,
         'email' => 'test@example.com',
         'password' => 'test',
     ]);
-    table('users', static::$db)->where('id', 1)->delete();
-    $total = table('users', static::$db)->selectCount('id', 'total')->first()->total;
+    $db->table('users')->where('id', 1)->delete();
+    $total = $db->table('users')->selectCount('id', 'total')->first()->total;
     assertEquals($total, 1);
+});
+
+test('mysql', function () {
+    $mysql = db([
+        'DBDriver' => 'MySQLi',
+        'hostname' => '127.0.0.1',
+        'database' => 'startci',
+        'username' => 'root',
+        'password' => '3af8601b46ab39f0',
+    ]);
+    
+    $db = $mysql;
+
+    $db->table('users')->create([
+        'name' => 'text',
+        'age' => 'integer',
+        'email' => 'text',
+        'password' => 'text',
+    ]);
+    $db->table('user_cnames')->create([
+        'user' => 'users.id',
+        'name' => 'text'
+    ]);
+
+    $tables = $db->listTables();
+    expect($tables)->toContain('users');
+    expect($tables)->toContain('user_cnames');
+    $prefix = $db->getPrefix();
+    assertContains($prefix . 'users', $tables);
+    assertContains($prefix . 'user_cnames', $tables);
+
+    $db->table('users')->insert([
+        'name' => 'test',
+        'age' => 1,
+        'email' => 'test@example.com',
+        'password' => 'test',
+    ]);
+    $id = $db->insertID();
+    assertNotFalse($id);
+    assertIsNumeric($id);
+    foreach (range(1, 10) as $key => $value) {
+        $db->table('user_cnames')->insert([
+            'user' => $id,
+            'name' => 'test',
+        ]);
+        $id_user_cnames = $db->insertID();
+        assertNotFalse($id_user_cnames);
+        assertIsNumeric($id_user_cnames);
+    }
+
+    $resultado1 = $db->table('users')->select('id, name, age, email')->get()->getResult();
+    $resultado2 = $db->table('users')->select('id, name, age, email')->get()->getFirstRow();
+    assertEquals($db->table('users')->select('id,name,age,email')->rs(), $resultado1);
+    assertEquals($db->table('users')->select('id,name,age,email')->first(), $resultado2);
+    assertEquals($db->table('users')->select('id,name,age,email')->last(), $resultado2);
+
+    $resultado1 = $db->table('users')->like('name', 'felipe')->select('id,name')->rs();
+    $db->table('users')->like('name', 'tes')->update([
+        'name' => 'felipe',
+    ]);
+    $resultado2 = $db->table('users')->like('name', 'felipe')->select('id,name')->rs();
+    assertNotEquals($resultado1, $resultado2);
+
+    $db->table('users')->insert([
+        'name' => 'test',
+        'age' => 1,
+        'email' => 'test@example.com',
+        'password' => 'test',
+    ]);
+    $db->table('users')->where('id', 1)->delete();
+    $total = $db->table('users')->selectCount('id', 'total')->first()->total;
+    assertEquals($total, 1);
+    $db->disableForeignKeyChecks();
+    $tables = $db->listTables();
+    foreach ($tables as $key => $value) {
+        $db->query('DROP TABLE IF EXISTS ' . $value);
+    }
 });

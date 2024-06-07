@@ -36,7 +36,8 @@ class Builder
     function __call($name, $params = [])
     {
         if (method_exists($this->builder, $name)) {
-            $r = $this->con->{$name}(...$params);
+            $r = $this->builder->{$name}(...$params);
+            
             if (gettype($r) == 'object') {
                 if (class_basename($r) == 'Builder') {
                     return new Builder($this->con, $r);

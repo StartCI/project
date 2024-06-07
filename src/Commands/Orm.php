@@ -356,6 +356,7 @@ class Orm extends BaseCommand
             sleep(1);
 
         }
+        
         $con->transBegin();
         $path = '../app/Models';
         $fqcns = array();
