@@ -1,5 +1,8 @@
 <?php
+use CodeIgniter\Config\Services;
+use CodeIgniter\Log\Logger;
 use CodeIgniter\Startci\Commands\Orm;
+
 // uses(\CodeIgniter\Test\CIUnitTestCase::class);
 // uses(\CodeIgniter\Test\CIDatabaseTestCase::class);
 
@@ -12,21 +15,18 @@ beforeEach(function () {
 });
 
 test('create', function () {
-    // command('startci:orm up');
-    // $db = db_connect();
-    // xdebug_break();
+    $model = new \App\Models\Usuarios();
+    $model->create();
+    $model = new \App\Models\Usuarios\Clientes();
+    $model->create();
+    $tabelas = db_connect()->listTables();
+    xdebug_break();
 });
 
 test('up', function () {
-    
-  $orm = new Orm()  ;
-  $orm->up();
-    // $driver = env('database.default.DBDriver');
-    // $db = db_connect();
-    
-    // xdebug_break();
-    // command('startci:orm up');
-    
+    // Services::commands()->run('startci:orm', ['up']);
+
+
     // xdebug_break();
 });
 

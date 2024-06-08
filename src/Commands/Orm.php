@@ -75,6 +75,7 @@ class Orm extends BaseCommand
      */
     public function run(array $params)
     {
+        chdir(ROOTPATH);
         $cmd = $params[0] ?? null;
         $this->$cmd($params);
     }
@@ -222,16 +223,7 @@ class Orm extends BaseCommand
     }
     function seed($p)
     {
-        for ($i = 0; $i < 10; $i++) {
-            try {
-                $con = @db_connect();
-                @$con->simpleQuery("SET foreign_key_checks = 0");
-                break;
-            } catch (\Throwable $th) {
-            }
-            sleep(1);
 
-        }
         $path = '../app/Models';
         $fqcns = array();
         $allFiles = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path));
@@ -326,37 +318,40 @@ class Orm extends BaseCommand
     }
     function up()
     {
+        xdebug_break();
         cache()->delete('startci_models_create');
-        for ($i = 0; $i < 10; $i++) {
+        // for ($i = 0; $i < 10; $i++) {
 
-            try {
-                $database = env('database.default.database');
-                $config = [
-                    'hostname' => env('database.default.hostname'),
-                    'username' => env('database.default.username'),
-                    'password' => env('database.default.password'),
-                    'DBDriver' => env('database.default.DBDriver'),
-                    'DBPrefix' => env('database.default.DBPrefix'),
-                    'port' => env('database.default.port'),
-                ];
-                \Config\Database::forge($config)->createDatabase($database, true);
-                break;
-            } catch (\Throwable $th) {
-                //throw $th;
-            }
-            sleep(1);
-        }
-        for ($i = 0; $i < 10; $i++) {
-            try {
-                $con = @db_connect();
-                @$con->simpleQuery("SET foreign_key_checks = 0");
-                break;
-            } catch (\Throwable $th) {
-            }
-            sleep(1);
+        //     try {
+        //         $database = env('database.default.database');
+        //         $config = [
+        //             'hostname' => env('database.default.hostname'),
+        //             'username' => env('database.default.username'),
+        //             'password' => env('database.default.password'),
+        //             'DBDriver' => env('database.default.DBDriver'),
+        //             'DBPrefix' => env('database.default.DBPrefix'),
+        //             'port' => env('database.default.port'),
+        //         ];
+        //         \Config\Database::forge($config)->createDatabase($database, true);
+        //         break;
+        //     } catch (\Throwable $th) {
+        //         //throw $th;
+        //     }
+        //     sleep(1);
+        // }
+        // for ($i = 0; $i < 10; $i++) {
+        //     try {
+        //         $con = @db_connect();
+        //         @$con->simpleQuery("SET foreign_key_checks = 0");
+        //         break;
+        //     } catch (\Throwable $th) {
+        //     }
+        //     sleep(1);
 
-        }
+        // }
         
+        $con = db_connect();
+        $con->disableForeignKeyChecks();
         $con->transBegin();
         $path = '../app/Models';
         $fqcns = array();
