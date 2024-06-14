@@ -15,9 +15,18 @@ beforeEach(function () {
 });
 
 test('create', function () {
-    $model = new \App\Models\Usuarios();
+    $db = [
+        'DBDriver' => 'MySQLi',
+        'hostname' => '127.0.0.1',
+        'database' => 'startci',
+        'username' => 'root',
+        'password' => '3af8601b46ab39f0',
+        'port' => 3306
+    ];
+    
+    $model = new \App\Models\Usuarios($db);
     $model->create();
-    $model = new \App\Models\Usuarios\Clientes();
+    $model = new \App\Models\Usuarios\Clientes($db);
     $model->create();
     $tabelas = db_connect()->listTables();
     xdebug_break();

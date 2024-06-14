@@ -10,9 +10,7 @@ use function PHPUnit\Framework\assertNotEquals;
 use function PHPUnit\Framework\assertNotFalse;
 
 beforeEach(function () {
-    if (file_exists('writable/db.sqlite')) {
-        unlink('writable/db.sqlite');
-    }
+
     $this->sqlite = db([
         'DBDriver' => 'SQLite3',
         'hostname' => 'db.sqlite',
@@ -39,6 +37,9 @@ test('connection', function () {
     expect($this->postgres->con)->toBeInstanceOf(CodeIgniter\Database\Postgre\Connection::class);
 
 });
+
+
+
 test('sqlite', function () {
     $sqlite = db([
         'DBDriver' => 'SQLite3',
@@ -101,8 +102,50 @@ test('sqlite', function () {
     $db->table('users')->where('id', 1)->delete();
     $total = $db->table('users')->selectCount('id', 'total')->first()->total;
     assertEquals($total, 1);
-});
 
+
+    if (file_exists('writable/db.sqlite')) {
+        unlink('writable/db.sqlite');
+    }
+
+
+
+});
+test('record', function () {
+    $sqlite = db([
+        'DBDriver' => 'SQLite3',
+        'hostname' => 'db.sqlite',
+        'database' => 'db.sqlite',
+    ]);
+    $db = $sqlite;
+    $db->table('users')->create([
+        'name' => 'text',
+        'age' => 'integer',
+        'email' => 'text',
+        'password' => 'text',
+    ]);
+    $db->query('delete from users');
+    $db->table('users')->insert([
+        'name' => 'test',
+        'age' => 1,
+        'email' => 'test@example.com',
+        'password' => 'test',
+    ]);
+    $db->table('users')->insert([
+        'name' => 'test2',
+        'age' => 1,
+        'email' => 'test2@example.com',
+        'password' => 'test2',
+    ]);
+    $record_result = $db->table('users')->like('name', 'test2')->first_record();
+
+    expect($record_result['id'])->toBeNumeric();
+    expect($record_result->id)->toBeNumeric();
+    $record_result->name = 'record example';
+    $value_return = $record_result->save();
+    expect($value_return->name)->toBe('record example');
+
+})->only();
 test('mysql', function () {
     $mysql = db([
         'DBDriver' => 'MySQLi',

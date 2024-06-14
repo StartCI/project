@@ -5,13 +5,14 @@ namespace CodeIgniter\Startci;
 use \CodeIgniter\Database\BaseBuilder;
 use CodeIgniter\Traits\ConditionalTrait;
 use stdClass;
+
 /**
  * Class Db
  * @package CodeIgniter\Startci
  *
  * @mixin BaseBuilder
  */
-class Builder 
+class Builder
 {
     /**
      * @var \CodeIgniter\Database\BaseBuilder
@@ -22,11 +23,12 @@ class Builder
      */
     var $con = null;
 
-    function __construct($db = null,$builder = null){
+    function __construct($db = null, $builder = null)
+    {
         $this->con = $db;
         $this->builder = $builder;
     }
-    
+
     /**
      * Summary of __call
      * @param mixed $name
@@ -37,7 +39,7 @@ class Builder
     {
         if (method_exists($this->builder, $name)) {
             $r = $this->builder->{$name}(...$params);
-            
+
             if (gettype($r) == 'object') {
                 if (class_basename($r) == 'Builder') {
                     return new Builder($this->con, $r);
@@ -105,6 +107,56 @@ class Builder
     }
 
     /**
+     * Return a result set as an array of Records
+     *
+     * @return Record[]
+     */
+    function rs_record()
+    {
+        return $this->result_record();
+    }
+
+    /**
+     * Return a result set as an array of Records
+     *
+     * @return Record[]
+     */
+    function result_record()
+    {
+        return array_map(function($v){
+            $v->setDatabase($this->con);
+            $v->setTable($this->builder->getTable());
+            return $v;
+        },$this->result(Record::class));
+    }
+
+    /**
+     * Return a first result set as Records
+     *
+     * @return Record
+     */
+    function first_record()
+    {
+        $record =  $this->first(Record::class);
+        $record->setDatabase($this->con);
+        $record->setTable($this->builder->getTable());
+        return $record;
+    }
+
+    /**
+     * Return a last result set as Records
+     *
+     * @return Record
+     */
+    function last_record()
+    {
+        $record = $this->last(Record::class);
+        $record->setDatabase($this->con);
+        $record->setTable($this->builder->getTable());
+        return $record;
+    }
+
+    /**
      * Sets a test mode status.
      *
      * @param boolean $type Mode to set
@@ -125,7 +177,8 @@ class Builder
      */
     public function last(string $type = 'object')
     {
-        return $this->get()->getLastRow($type);
+        $result = $this->get()->getLastRow($type);
+        return $result;
     }
 
     /**
@@ -257,5 +310,5 @@ class Builder
         }
         return $this;
     }
- 
+
 }

@@ -253,7 +253,7 @@ class ORM
             return false;
         $models_create[] = $rc->getName();
         cache()->save('startci_models_create', $models_create, 3600);
-        $myClass = new $this->class();
+        // $myClass = new $this->class();
         // if (!$prefix) {
         //     $prefix = implode('_', array_map('strtolower', array_slice(explode('\\', $myClass->class), 2, -1)));
         //     if ($prefix)
@@ -272,7 +272,8 @@ class ORM
             $type = strval($t->getType());
             $is_relation = class_exists($type) && str_starts_with($type, '\App\Models');
             if ($is_relation && !in_array($type, ['date', 'datetime', 'timestamp'])) {
-                $c = new $type();
+                xdebug_break();
+                $c = new $type($this->db);
                 $c->create();
                 $type = $c->table . '.id';
             }
