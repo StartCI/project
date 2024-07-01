@@ -51,7 +51,7 @@ class Record implements \ArrayAccess
     {
         if (!isset($this->data['id'])) {
             return null;
-        }
+        }  
         $this->db->table($this->table)->where('id', $this->data['id'])->delete();
         return null;
     }
