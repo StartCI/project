@@ -18,8 +18,8 @@
         "firebase/php-jwt": "^6.4",
         "slowprog/composer-copy-file": "^0.3.3",
         "composer/composer": "^2.5",
-        "symfony/console": "^6.0",
-        "psy/psysh": "^0.11.15",
+        "symfony/console": "^7",
+        "psy/psysh": "*",
         "league/climate": "^3.8.2"
     },
     "require-dev": {
