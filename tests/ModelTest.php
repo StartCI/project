@@ -7,30 +7,46 @@ use CodeIgniter\Startci\Commands\Orm;
 // uses(\CodeIgniter\Test\CIDatabaseTestCase::class);
 
 beforeEach(function () {
-    
+
 });
 
 test('create', function () {
-    // $db = [
+    // $db = db([
     //     'DBDriver' => 'MySQLi',
-    //     'hostname' => '127.0.0.1',
+    //     'hostname' => 'localhost',
     //     'database' => 'startci',
     //     'username' => 'root',
     //     'password' => '3af8601b46ab39f0',
-    //     'port' => 3306
-    // ];    
+    //     'port' => 3306,
+    //     'charset' => 'utf8',
+    //     'DBCollat' => 'utf8_general_ci',
+    // ]);
     $db = db([
-        'DBDriver' => 'SQLite3',
-        'hostname' => 'db.sqlite',
-        'database' => 'db.sqlite',
+        'DBDriver' => 'Postgre',
+        'hostname' => 'localhost',
+        'database' => 'startci',
+        'username' => 'startci',
+        'password' => '3af8601b46ab39f0',
+        'charset'     => 'utf8',
+        // 'DBCollat'    => 'utf8_general_ci',
     ]);
+    // $db = db([
+    //     'DBDriver' => 'SQLite3',
+    //     'hostname' => 'db.sqlite',
+    //     'database' => 'db.sqlite',
+    // ]);
     // $model = new \App\Models\Usuarios($db);
     // $model->create();
+    cache()->clean();
+    // xdebug_break();
     $model = new \App\Models\Usuarios\Clientes($db);
     $model->create();
+    $teste = new \App\Models\Teste($db);
+    $teste->create();
     // $model->create();
     // $tabelas = db_connect()->listTables();
-    xdebug_break();
+    // xdebug_break();
+
 });
 
 test('up', function () {

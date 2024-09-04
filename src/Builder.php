@@ -209,6 +209,7 @@ class Builder
      */
     public function create(array $fields, $pk = true)
     {
+        // xdebug_break();
         $table = $this->builder->getTable();
         while (true) {
             try {

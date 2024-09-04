@@ -4,11 +4,11 @@ namespace App\Models\Usuarios;
 
 /**
  * @property integer $id AutoIncrement
- * @property \App\Models\Usuarios $usuario
+ * @property string $nome
  * @property \App\Models\Clientes $cliente
  * @property string $created_at
  * @property string $updated_at
- * @table usuarios_clientes
+ * @table clientes
  */
 class Clientes extends \CodeIgniter\Startci\ORM {
 

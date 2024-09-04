@@ -59,7 +59,7 @@ use ReflectionProperty;
  * @method ORM resetQuery()
  * @method ORM def($values = [])
  *
- * @mixin CodeIgniter\Startci\Builder
+ * @mixin Builder
  */
 class ORM extends Record
 {
@@ -68,6 +68,11 @@ class ORM extends Record
     var $autoload = [];
 
     var $fields = [];
+    /**
+     *
+     * @var Builder
+     */
+    var $builder = null;
 
 
     function onSave()
@@ -126,7 +131,7 @@ class ORM extends Record
         $c_name = $c_name[count($c_name) - 1];
         if (!$this->table)
             $this->table = strtolower($c_name);
-        
+
         $rc = new ReflectionClass($this->class);
 
         $factory = DocBlockFactory::createInstance();
@@ -136,7 +141,7 @@ class ORM extends Record
         $this->table = strval($docblock->getTagsByName('table')[0]);
         if (!$this->table)
             $this->table = strtolower($c_name);
-        
+
         if ($autoload) {
             $this->autoload = explode(' ', strval($autoload[0]));
         }
@@ -150,7 +155,9 @@ class ORM extends Record
                 ];
         }
         $this->fields = $fields;
+        // xdebug_break();
         parent::__construct($this->table, $db);
+        $this->builder = $this->db->table($this->table);
     }
 
     function load($prop)
@@ -160,6 +167,7 @@ class ORM extends Record
     }
     function create($prefix = null, $pk = true)
     {
+        // xdebug_break();
         $rc = new ReflectionClass($this->class);
         if (!$models_create = cache()->get('startci_models_create'))
             $models_create = [];
@@ -167,7 +175,7 @@ class ORM extends Record
             return false;
         $models_create[] = $rc->getName();
         cache()->save('startci_models_create', $models_create, 3600);
-       
+
         $factory = DocBlockFactory::createInstance();
         $docblock = $factory->create($rc->getDocComment() ?? '');
         $tags = $docblock->getTagsByName('property');
@@ -199,7 +207,7 @@ class ORM extends Record
                 continue;
             $fields[$name] = $type;
         }
-        $this->db->builder->create($fields,$pk);
+        $this->builder->create($fields,$pk);
     }
 
     function run_seed()
