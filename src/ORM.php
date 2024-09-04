@@ -236,19 +236,6 @@ class ORM extends Record
     }
 
 
-    function relation($class, $fk, $id = null, $mode = 'many')
-    {
-        $c = new $class($this->db);
-        if (!$id)
-            $id = $this->id;
-        return $c->where($fk, $id)->get();
-    }
-
-    function relationOne($class, $fk, $id)
-    {
-        $c = new $class($this->db);
-        return $c->where($fk, $id)->first();
-    }
 
     /**
      *
