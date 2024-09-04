@@ -28,7 +28,6 @@ test('create', function () {
         'username' => 'startci',
         'password' => '3af8601b46ab39f0',
         'charset'     => 'utf8',
-        // 'DBCollat'    => 'utf8_general_ci',
     ]);
     // $db = db([
     //     'DBDriver' => 'SQLite3',
@@ -43,6 +42,9 @@ test('create', function () {
     $model->create();
     $teste = new \App\Models\Teste($db);
     $teste->create();
+
+    $teste->nome = 'teste';
+    $teste->save();
     // $model->create();
     // $tabelas = db_connect()->listTables();
     // xdebug_break();
