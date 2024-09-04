@@ -8,6 +8,7 @@
 		}
 	],
 	"settings": {
-		"nuxt.isNuxtApp": false
+		"nuxt.isNuxtApp": false,
+		"php.version": "8.1"
 	}
 }

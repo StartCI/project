@@ -61,21 +61,75 @@ use ReflectionProperty;
  *
  * @mixin CodeIgniter\Startci\Builder
  */
-class ORM extends Record
+class ORM
 {
 
-    var $class = null;
-    var $autoload = [];
+    /**
+     *
+     * @var \CodeIgniter\Database\BaseConnection
+     */
+    private $db;
 
-    var $fields = [];
+    /**
+     *
+     * @var CodeIgniter\Startci\Builder
+     */
+    public $builder;
+    private $class;
+    private $table = '';
+    private $autoload = [];
+    private $fields = [];
+    private $data = [];
+    private $queryHistory = [];
 
+    /**
+     * @return static
+     */
+    static function init($db = null)
+    {
+        return new static($db);
+    }
+    function get_fields()
+    {
+        return $this->fields;
+    }
+    function history()
+    {
+        return $this->queryHistory;
+    }
+    function get_class()
+    {
+        return $this->class;
+    }
+    function get_table()
+    {
+        return $this->table;
+    }
+    function get_autoload()
+    {
+        return array_unique($this->autoload);
+    }
+    function fromObject(object $o)
+    {
+        foreach (get_object_vars($o) as $key => $value) {
+            $this->data[$key] = $value;
+        }
+        return $this;
+    }
+    function fromArray(array $o)
+    {
+        foreach ($o as $key => $value) {
+            $this->data[$key] = $value;
+        }
+        return $this;
+    }
 
     function onSave()
     {
         return true;
     }
 
-    function onDelete()
+    function onRemove()
     {
         return true;
     }
@@ -100,33 +154,63 @@ class ORM extends Record
     {
         $value = $this->onSet($name, $value);
         $this->data[$name] = $value;
+        $this->{$name} = $value;
     }
 
     function save($data = [])
     {
         if ($this->onSave() === false)
             return false;
-        return parent::save();
-
+        $d = [];
+        $reflection = new ReflectionObject($this);
+        $properties = $reflection->getProperties();
+        $ps = [];
+        foreach ($properties as $property)
+            $ps[] = $property->name;
+        foreach ($ps as $key => $value) {
+            $key = $value;
+            $value = $this->{$value};
+            if (isset($value->id))
+                if ($value->id)
+                    $value = $value->id;
+            $d[$key] = $value;
+        }
+        $d = array_merge($d, $data);
+        if ($d['id'] ?? false) {
+            $this->where('id', $d['id'])->update($d);
+            $r = $this->byId($d['id']);
+            $this->id = $r->id;
+            return $r;
+        } else {
+            if ($this->insert($d)) {
+                $r = $this->byId($this->db->insertID());
+                $this->id = $r->id;
+                return $r;
+            } else {
+                return false;
+            }
+        }
     }
 
-    function delete()
+    function remove()
     {
-        if ($this->onDelete() === false)
+        if ($this->onRemove() === false)
             return false;
-
-        return parent::delete();
+        if ($this->id ?? false) {
+            return $this->where('id', $this->id)->delete();
+        }
+        return false;
     }
 
     public function __construct($db = null)
     {
-
+        $this->db = db_connect($db);
         $this->class = get_class($this);
         $c_name = explode('\\', $this->class);
         $c_name = $c_name[count($c_name) - 1];
         if (!$this->table)
             $this->table = strtolower($c_name);
-        
+        $this->builder = $this->db->table($this->table);
         $rc = new ReflectionClass($this->class);
 
         $factory = DocBlockFactory::createInstance();
@@ -136,7 +220,7 @@ class ORM extends Record
         $this->table = strval($docblock->getTagsByName('table')[0]);
         if (!$this->table)
             $this->table = strtolower($c_name);
-        
+        $this->builder = $this->db->table($this->table);
         if ($autoload) {
             $this->autoload = explode(' ', strval($autoload[0]));
         }
@@ -150,9 +234,11 @@ class ORM extends Record
                 ];
         }
         $this->fields = $fields;
-        parent::__construct($this->table, $db);
+        $tables = $this->db->listTables();
+        if (!in_array($this->table, $tables)) {
+            $this->create();
+        }
     }
-
     function load($prop)
     {
         $this->autoload[] = $prop;
@@ -167,7 +253,14 @@ class ORM extends Record
             return false;
         $models_create[] = $rc->getName();
         cache()->save('startci_models_create', $models_create, 3600);
-       
+        // $myClass = new $this->class();
+        // if (!$prefix) {
+        //     $prefix = implode('_', array_map('strtolower', array_slice(explode('\\', $myClass->class), 2, -1)));
+        //     if ($prefix)
+        //         $prefix .= '_';
+        // }
+        // if ($prefix)
+        //     $this->builder->setTableName($prefix . $this->table);
         $factory = DocBlockFactory::createInstance();
         $docblock = $factory->create($rc->getDocComment() ?? '');
         $tags = $docblock->getTagsByName('property');
@@ -179,6 +272,7 @@ class ORM extends Record
             $type = strval($t->getType());
             $is_relation = class_exists($type) && str_starts_with($type, '\App\Models');
             if ($is_relation && !in_array($type, ['date', 'datetime', 'timestamp'])) {
+                xdebug_break();
                 $c = new $type($this->db);
                 $c->create();
                 $type = $c->table . '.id';
@@ -199,7 +293,7 @@ class ORM extends Record
                 continue;
             $fields[$name] = $type;
         }
-        $this->db->builder->create($fields,$pk);
+        $this->_create($fields, $pk);
     }
 
     function run_seed()
@@ -231,7 +325,7 @@ class ORM extends Record
      */
     function byId($id)
     {
-        $this->db->builder->where('id', $id);
+        $this->builder->where('id', $id);
         return $this->first();
     }
 
@@ -307,7 +401,7 @@ class ORM extends Record
             $content = $r->onGet($value);
             $r->{$value} = $content;
         }
-        return $r;
+        return  $r;
     }
 
     /**
@@ -403,7 +497,7 @@ class ORM extends Record
             sleep(1);
         }
 
-        $forge = \Config\Database::forge($this->db);
+        $forge =\Config\Database::forge($this->db);
         $db = $this->db;
         $tables = $db->listTables();
         $f = [];

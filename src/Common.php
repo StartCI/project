@@ -849,6 +849,7 @@ function hidden($id, $value = "", $show = false)
 //     }
 //     Kint\Kint::$aliases[] = 'sd';
 // }
+
 /**
  * Grabs a database connection and returns it to the user.
  *
@@ -869,9 +870,10 @@ function hidden($id, $value = "", $show = false)
  */
 function db($connection = null)
 {
-    return new Db(db_connect($connection));
+    return new  Db(db_connect($connection));
 }
 if(!function_exists('xdebug_break')){
     function xdebug_break(){}
 }
+
 //</newbgp>

@@ -7,9 +7,19 @@ class Record implements \ArrayAccess
 
     var $data = [];
     var $table = '';
-    /** @var \CodeIgniter\Database\BaseConnection */
+    /** @var \CodeIgniter\Database\BaseConnection|Db */
     var $db = null;
 
+    function __construct($table = null, $db = null)
+    {
+        $this->table = $table;
+        if($db == null){
+            $this->db = db($db);
+        }else{
+            $this->db = $db;
+        }
+        
+    }
 
     function setDatabase($db)
     {
@@ -51,7 +61,7 @@ class Record implements \ArrayAccess
     {
         if (!isset($this->data['id'])) {
             return null;
-        }  
+        }
         $this->db->table($this->table)->where('id', $this->data['id'])->delete();
         return null;
     }

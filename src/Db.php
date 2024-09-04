@@ -22,6 +22,9 @@ class Db
      */
     var $con = null;
 
+    /**
+     * @var Builder
+     */
     var $builder = null;
 
     function __construct(\CodeIgniter\Database\BaseConnection $db = null)
