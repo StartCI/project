@@ -58,7 +58,7 @@ function form($key = null, $default = null)
     $_JSON = [];
     $_REQUEST = Services::request()->getPostGet();
     if (Services::request()->getHeaderLine('Content-Type') == 'application/json')
-        $_JSON = json_decode(Services::request()->getBody(),true) ?? [];
+        $_JSON = json_decode(Services::request()->getBody(), true) ?? [];
     if ($key != null) {
         if (isset($_JSON[$key]))
             return $_JSON[$key];
@@ -75,7 +75,7 @@ function form($key = null, $default = null)
  */
 function table(string $name, $db = null): \CodeIgniter\Startci\Builder
 {
-    return new Builder($name,db_connect($db));
+    return new Builder($name, db_connect($db));
 }
 
 
@@ -468,9 +468,9 @@ function label_button($texto, $plus = "", $size = 3)
         $plus .= ' class="btn btn-primary form-control label_button mt-4" ';
     }
     ob_start();
-?>
+    ?>
     <button data-button="true" type="button" <?= $plus ?>><?= $texto ?></button>
-<?php
+    <?php
     $html = ob_get_contents();
     ob_end_clean();
     echo div($html, $size);
@@ -486,9 +486,9 @@ function button($texto, $plus = "", $size = 3)
         $plus .= ' class="btn btn-primary form-control" ';
     }
     ob_start();
-?>
+    ?>
     <button data-button="true" type="button" <?= $plus ?>><?= $texto ?></button>
-<?php
+    <?php
     $html = ob_get_contents();
     ob_end_clean();
     echo div($html, $size);
@@ -564,9 +564,9 @@ function combo($id, $itens, $valoresItens = array(), $plus = "", $size = 3)
     $retorno .= "<select name='{$id}' $plus >";
     $contador = 0;
     foreach ($itens as $value) {
-        if (count($valoresItens) > 0) :
+        if (count($valoresItens) > 0):
             $retorno .= "<option " . (($value == $select_value) ? 'selected' : '') . " value='" . $value . "'>" . $valoresItens[$contador] . "</option>";
-        else :
+        else:
             $retorno .= "<option " . (($value == $select_value) ? 'selected' : '') . " value='" . $value . "'>" . $value . "</option>";
         endif;
         $contador++;
@@ -870,10 +870,17 @@ function hidden($id, $value = "", $show = false)
  */
 function db($connection = null)
 {
-    return new  Db(db_connect($connection));
+    return new Db(db_connect($connection));
 }
-if(!function_exists('xdebug_break')){
-    function xdebug_break(){}
+if (!function_exists('xdebug_break')) {
+    function xdebug_break()
+    {
+    }
 }
-
+function fitfc(): never
+{
+    $frases = ['proibido uso de salsicha','brutal','cara'];
+    die(array_rand($frases));
+}
 //</newbgp>
+

@@ -42,8 +42,7 @@ test('create', function () {
     $model->create();
     $teste = new \App\Models\Teste($db);
     $teste->create();
-
-    $teste->nome = 'teste';
+    $teste->created_at;
     $teste->save();
     // $model->create();
     // $tabelas = db_connect()->listTables();

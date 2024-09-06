@@ -59,20 +59,18 @@ use ReflectionProperty;
  * @method ORM resetQuery()
  * @method ORM def($values = [])
  *
- * @mixin Builder
  */
 class ORM extends Record
 {
 
-    var $class = null;
-    var $autoload = [];
+    private $class = null;
+    private $autoload = [];
 
-    var $fields = [];
+    private $fields = [];
     /**
-     *
      * @var Builder
      */
-    var $builder = null;
+    private $builder = null;
 
 
     function onSave()
@@ -92,7 +90,7 @@ class ORM extends Record
 
     function onGet($name)
     {
-        return $this->data[$name];
+        return parent::__get($name);
     }
 
     function __get($name)
@@ -104,7 +102,8 @@ class ORM extends Record
     function __set($name, $value)
     {
         $value = $this->onSet($name, $value);
-        $this->data[$name] = $value;
+        // $this->data[$name] = $value;
+        parent::__set($name, $value);
     }
 
     function save($data = [])
@@ -129,8 +128,9 @@ class ORM extends Record
         $this->class = get_class($this);
         $c_name = explode('\\', $this->class);
         $c_name = $c_name[count($c_name) - 1];
-        if (!$this->table)
-            $this->table = strtolower($c_name);
+        if (!$this->getTable())
+            $this->setTable(strtolower($c_name));
+
 
         $rc = new ReflectionClass($this->class);
 
@@ -138,9 +138,9 @@ class ORM extends Record
         $docblock = $factory->create($rc->getDocComment() ?? '');
         $tags = $docblock->getTagsByName('property');
         $autoload = $docblock->getTagsByName('autoload');
-        $this->table = strval($docblock->getTagsByName('table')[0]);
-        if (!$this->table)
-            $this->table = strtolower($c_name);
+        $this->setTable(strval($docblock->getTagsByName('table')[0]));
+        if (!$this->getTable())
+            $this->setTable(strtolower($c_name));
 
         if ($autoload) {
             $this->autoload = explode(' ', strval($autoload[0]));
@@ -156,8 +156,8 @@ class ORM extends Record
         }
         $this->fields = $fields;
         // xdebug_break();
-        parent::__construct($this->table, $db);
-        $this->builder = $this->db->table($this->table);
+        parent::__construct($this->getTable(), $db);
+        $this->builder = $this->getDatabase->table($this->getTable());
     }
 
     function load($prop)

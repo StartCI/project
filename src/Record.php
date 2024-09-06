@@ -5,32 +5,41 @@ namespace CodeIgniter\Startci;
 class Record implements \ArrayAccess
 {
 
-    var $data = [];
-    var $table = '';
+    private $data = [];
+    private $table = '';
     /** @var \CodeIgniter\Database\BaseConnection|Db */
-    var $db = null;
+    private $db = null;
 
     function __construct($table = null, $db = null)
     {
         $this->table = $table;
-        if($db == null){
+        if ($db == null) {
             $this->db = db($db);
-        }else{
+        } else {
             $this->db = $db;
         }
-        
+
     }
 
     function setDatabase($db)
     {
         $this->db = $db;
     }
+    function getDatabase()
+    {
+
+        return $this->db;
+    }
     function setTable($table)
     {
 
         $this->table = $table;
     }
+    function getTable()
+    {
 
+        return $this->table;
+    }
     function save()
     {
         if (isset($this->data['id'])) {

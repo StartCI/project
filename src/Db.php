@@ -20,12 +20,12 @@ class Db
     /**
      * @var \CodeIgniter\Database\BaseConnection
      */
-    var $con = null;
+    private $con = null;
 
     /**
      * @var Builder
      */
-    var $builder = null;
+    private $builder = null;
 
     function __construct(\CodeIgniter\Database\BaseConnection $db = null)
     {
