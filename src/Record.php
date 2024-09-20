@@ -1,4 +1,5 @@
 <?php
+
 namespace CodeIgniter\Startci;
 
 
@@ -18,7 +19,6 @@ class Record implements \ArrayAccess
         } else {
             $this->db = $db;
         }
-
     }
 
     function setDatabase($db)
@@ -40,6 +40,12 @@ class Record implements \ArrayAccess
 
         return $this->table;
     }
+    function getData()
+    {
+
+        return $this->data;
+    }
+
     function save()
     {
         if (isset($this->data['id'])) {
@@ -48,6 +54,7 @@ class Record implements \ArrayAccess
         } else {
             $this->db->table($this->table)->insert($this->data);
             $this->data['id'] = $this->db->insertID();
+            $this->data = (array)$this->db->table($this->table)->where('id', $this->data['id'])->first();
             return $this;
         }
     }
@@ -59,6 +66,7 @@ class Record implements \ArrayAccess
         }
         $this->db->table($this->table)->insert($this->data);
         $this->data['id'] = $this->db->insertID();
+        $this->data = (array)$this->db->table($this->table)->where('id', $this->data['id'])->first();
         return $this;
     }
     function update()
@@ -101,7 +109,6 @@ class Record implements \ArrayAccess
         } else {
             return null;
         }
-
     }
     function offsetSet(mixed $offset, mixed $value): void
     {

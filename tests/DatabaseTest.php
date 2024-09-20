@@ -118,8 +118,8 @@ test('record', function () {
         'hostname' => 'db.sqlite',
         'database' => 'db.sqlite',
     ]);
-    
-    
+
+
     $db = $sqlite;
     $db->table('users')->create([
         'name' => 'text',
@@ -141,7 +141,7 @@ test('record', function () {
         'password' => 'test2',
     ]);
     $record_result = $db->table('users')->like('name', 'test2')->first_record();
-    
+
     expect($record_result['id'])->toBeNumeric();
     expect($record_result->id)->toBeNumeric();
     $record_result->name = 'record example';

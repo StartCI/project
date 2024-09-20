@@ -71,7 +71,12 @@ class ORM extends Record
      * @var Builder
      */
     private $builder = null;
+    private $queryHistory = [];
 
+    function getQueryHistory(){
+
+        return $this->queryHistory;
+    }
 
     function onSave()
     {
@@ -106,11 +111,22 @@ class ORM extends Record
         parent::__set($name, $value);
     }
 
+    function get_fields(){
+
+        return $this->fields;
+    }
+    /**
+     *
+     *
+     * @param mixed $data
+     * @return static
+     */
     function save($data = [])
     {
         if ($this->onSave() === false)
             return false;
-        return parent::save();
+        $data = parent::save();
+        return $data;
 
     }
 
@@ -157,7 +173,7 @@ class ORM extends Record
         $this->fields = $fields;
         // xdebug_break();
         parent::__construct($this->getTable(), $db);
-        $this->builder = $this->getDatabase->table($this->getTable());
+        $this->builder = $this->getDatabase()->table($this->getTable());
     }
 
     function load($prop)
@@ -165,7 +181,11 @@ class ORM extends Record
         $this->autoload[] = $prop;
         return $this;
     }
-    function create($prefix = null, $pk = true)
+    function create($prefix=null){
+        $this->__create($prefix, false);
+        $this->__create($prefix, true);
+    }
+    function __create($prefix = null, $pk = true)
     {
         // xdebug_break();
         $rc = new ReflectionClass($this->class);
@@ -187,7 +207,7 @@ class ORM extends Record
             $type = strval($t->getType());
             $is_relation = class_exists($type) && str_starts_with($type, '\App\Models');
             if ($is_relation && !in_array($type, ['date', 'datetime', 'timestamp'])) {
-                $c = new $type($this->db);
+                $c = new $type($this->getDatabase());
                 $c->create();
                 $type = $c->table . '.id';
             }
@@ -207,7 +227,7 @@ class ORM extends Record
                 continue;
             $fields[$name] = $type;
         }
-        $this->builder->create($fields,$pk);
+        $this->builder->create($fields, $pk);
     }
 
     function run_seed()
@@ -215,16 +235,16 @@ class ORM extends Record
         $rc = new ReflectionClass($this->class);
         $myClass = new $this->class();
         if ($rc->hasMethod('seed')) {
-            if ($this->db->table($this->table)->countAll() == 0) {
-                CLI::write("Running seed in $this->table");
+            if ($this->getDatabase()->table($this->getTable())->countAll() == 0) {
+                CLI::write("Running seed in {$this->getTable()}");
                 if ($seed = $myClass->seed()) {
                     foreach ($seed as $key => $s) {
                         try {
                             if (!$this->builder->insert($s)) {
-                                die(CLI::error($this->class . "-" . db_connect()->error()['message']));
+                                die(CLI::error($this->class . "-" . $this->getDatabase()->error()['message']));
                             }
                         } catch (\Throwable $th) {
-                            die(CLI::error($this->class . "-" . db_connect()->error()['message']));
+                            die(CLI::error($this->class . "-" . $this->getDatabase()->error()['message']));
                         }
                     }
                 }
@@ -237,9 +257,9 @@ class ORM extends Record
      * @param integer $id
      * @return self|parent|static
      */
-    function byId($id)
+    function byId($id): ORM|Record|self|null
     {
-        $this->db->builder->where('id', $id);
+        $this->builder->where('id', $id);
         return $this->first();
     }
 
@@ -255,7 +275,7 @@ class ORM extends Record
             $autoload = $this->get_autoload();
             $r = collect($this->builder->get()->getResult())->map(function ($v, $k) use ($autoload) {
                 $class = $this->get_class();
-                $r = new $class($this->db);
+                $r = new $class($this->getDatabase());
                 if (!$v)
                     return null;
                 foreach ($this->get_fields() as $key => $value) {
@@ -282,13 +302,13 @@ class ORM extends Record
 
     /**
      *
-     * @return self|this|null|parent|static
+     * @return ORM|Record|self|null
      */
-    function first()
+    function first(): ORM|Record|self|null
     {
         $v = $this->_first();
         $class = $this->get_class();
-        $r = new $class($this->db);
+        $r = new $class($this->getDatabase());
         if (!$v)
             return null;
         foreach ($this->get_fields() as $key => $value) {
@@ -319,18 +339,18 @@ class ORM extends Record
             $result = $this->builder->{$name}(...$params);
         if (is_object($result) && !$result instanceof ORM)
             $result = $this;
-        $this->queryHistory[] = db_connect()->getLastQuery() . '';
+        $this->queryHistory[] = $this->getDatabase()->getLastQuery() . '';
         return $result;
     }
 
     function toJson()
     {
-        return json_encode($this->data);
+        return json_encode($this->getData());
     }
 
     public function __debugInfo()
     {
-        return $this->data;
+        return $this->getData();
     }
 
     /**
@@ -340,7 +360,7 @@ class ORM extends Record
      *
      * @return mixed
      */
-    public function _first(string $type = 'object')
+    private function _first(string $type = 'object')
     {
         return $this->builder->get()->getFirstRow($type);
     }
@@ -352,7 +372,7 @@ class ORM extends Record
      *
      * @return mixed
      */
-    public function _last(string $type = 'object')
+    private function _last(string $type = 'object')
     {
         return $this->builder->get()->getLastRow($type);
     }
@@ -362,12 +382,12 @@ class ORM extends Record
      *
      * @param boolean $mode Mode to set
      *
-     * @return BaseBuilder
+     * @return Builder
      */
     function def($values = [])
     {
         $table = $this->tableName;
-        $forge = \Config\Database::forge($this->db);
+        $forge = \Config\Database::forge($this->getDatabase());
         $db = $this->db();
         $v = [];
 
@@ -385,9 +405,9 @@ class ORM extends Record
      *
      * @return $this
      */
-    public function _create(array $fields, $pk = true)
+    private function _create(array $fields, $pk = true)
     {
-        $table = $this->table;
+        $table = $this->getTable();
         while (true) {
             try {
                 $this->builder->db()->connect();
@@ -398,8 +418,8 @@ class ORM extends Record
             sleep(1);
         }
 
-        $forge = \Config\Database::forge($this->db);
-        $db = $this->db;
+        $forge = \Config\Database::forge($this->getDatabase());
+        $db = $this->getDatabase();
         $tables = $db->listTables();
         $f = [];
         foreach ($fields as $k => $field) {
