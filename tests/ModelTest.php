@@ -42,8 +42,10 @@ test('create', function () {
         $model->create();
         $model->nome = 'felipe';
         $model = $model->save();
+        $model->nome = 'felipe2';
+        $model = $model->save();
         $json = $model->toJson();
-        // xdebug_break();
+
     }
 });
 
