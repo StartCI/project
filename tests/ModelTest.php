@@ -41,11 +41,10 @@ test('create', function () {
         $model = new \App\Models\Usuarios\Clientes($db);
         $model->create();
         $model->nome = 'felipe';
-        $model = $model->save();
+        $model->save();
         $model->nome = 'felipe2';
-        $model = $model->save();
+        $model->save();
         $json = $model->toJson();
-
     }
 });
 
