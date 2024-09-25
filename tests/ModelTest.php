@@ -11,24 +11,24 @@ beforeEach(function () {});
 
 test('create', function () {
     $dbs = [
-        // db([
-        //     'DBDriver' => 'MySQLi',
-        //     'hostname' => '127.0.0.1',
-        //     'database' => 'startci',
-        //     'username' => 'root',
-        //     'password' => '123',
-        //     'port' => 3306,
-        //     'charset' => 'utf8',
-        //     'DBCollat' => 'utf8_general_ci',
-        // ]),
-        // db([
-        //     'DBDriver' => 'Postgre',
-        //     'hostname' => 'localhost',
-        //     'database' => 'startci',
-        //     'username' => 'startci',
-        //     'password' => '3af8601b46ab39f0',
-        //     'charset'  => 'utf8',
-        // ]),
+        db([
+            'DBDriver' => 'MySQLi',
+            'hostname' => '127.0.0.1',
+            'database' => 'startci',
+            'username' => 'root',
+            'password' => '123',
+            'port' => 3306,
+            'charset' => 'utf8',
+            'DBCollat' => 'utf8_general_ci',
+        ]),
+        db([
+            'DBDriver' => 'Postgre',
+            'hostname' => 'localhost',
+            'database' => 'startci',
+            'username' => 'startci',
+            'password' => '3af8601b46ab39f0',
+            'charset'  => 'utf8',
+        ]),
         db([
             'DBDriver' => 'SQLite3',
             'hostname' => 'db.sqlite',
@@ -38,7 +38,7 @@ test('create', function () {
 
     foreach ($dbs as $key => $db) {
         cache()->clean();
-        $model = new \App\Models\Usuarios\Clientes($db);
+        $model = new \App\Models\Clientes($db);
         $model->create();
         // $model->nome = 'felipe';
         // $model->save();
@@ -57,24 +57,24 @@ test('create', function () {
 test('save', function () {
 
     $dbs = [
-        // db([
-        //     'DBDriver' => 'MySQLi',
-        //     'hostname' => '127.0.0.1',
-        //     'database' => 'startci',
-        //     'username' => 'root',
-        //     'password' => '123',
-        //     'port' => 3306,
-        //     'charset' => 'utf8',
-        //     'DBCollat' => 'utf8_general_ci',
-        // ]),
-        // db([
-        //     'DBDriver' => 'Postgre',
-        //     'hostname' => 'localhost',
-        //     'database' => 'startci',
-        //     'username' => 'startci',
-        //     'password' => '3af8601b46ab39f0',
-        //     'charset'  => 'utf8',
-        // ]),
+        db([
+            'DBDriver' => 'MySQLi',
+            'hostname' => '127.0.0.1',
+            'database' => 'startci',
+            'username' => 'root',
+            'password' => '123',
+            'port' => 3306,
+            'charset' => 'utf8',
+            'DBCollat' => 'utf8_general_ci',
+        ]),
+        db([
+            'DBDriver' => 'Postgre',
+            'hostname' => 'localhost',
+            'database' => 'startci',
+            'username' => 'startci',
+            'password' => '3af8601b46ab39f0',
+            'charset'  => 'utf8',
+        ]),
         db([
             'DBDriver' => 'SQLite3',
             'hostname' => 'db.sqlite',
@@ -83,7 +83,11 @@ test('save', function () {
     ];
     foreach ($dbs as $key => $db) {
         cache()->clean();
-        $model = new \App\Models\Usuarios\Clientes($db);
+        $model = new \App\Models\Clientes($db);
+        $model->nome = 'NEWBGP';
+        $cliente = $model->save();
+        $id = $cliente->id;
+        xdebug_break();
     }
 });
 

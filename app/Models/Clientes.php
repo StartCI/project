@@ -7,18 +7,17 @@ namespace App\Models;
  * @property string $nome
  * @property string $created_at
  * @property string $updated_at
- * @table usuarios
+ * @table clientes
  */
-class Clientes extends \CodeIgniter\Startci\ORM {
+class Clientes extends \CodeIgniter\Startci\ORM
+{
 
     function onGet($name)
     {
-        switch($name){
+        switch ($name) {
             case '':
                 return '';
                 break;
         }
     }
-
 }
-

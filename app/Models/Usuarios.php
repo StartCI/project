@@ -21,6 +21,8 @@ class Usuarios extends \CodeIgniter\Startci\UserORM {
             case '':
                 return '';
                 break;
+            default:
+                return parent::onGet($name);
         }
     }
 

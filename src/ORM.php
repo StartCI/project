@@ -101,6 +101,11 @@ class ORM extends Record
     function __get($name)
     {
         $value = $this->onGet($name);
+        if(!$value){
+            if($tmp = $this->getData()[$name]){
+                return $tmp;
+            }
+        }
         return $value;
     }
 
@@ -127,7 +132,6 @@ class ORM extends Record
             return false;
         $data = parent::save();
         return $data;
-
     }
 
     function delete()
