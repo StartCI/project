@@ -118,7 +118,7 @@ test('delete', function () {
         ])
     ];
     foreach ($dbs as $key => $db) {
-        $model = new \App\Models\Usuarios\Clientes($db);
+        $model = new \App\Models\Clientes($db);
         $model->where('id', '1')->delete();//null
     }
 });
