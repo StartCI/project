@@ -334,7 +334,6 @@ class ORM extends Record
     public function __call(string $name, array $params)
     {
         $result = null;
-
         if (method_exists($this->builder, $name))
             $result = $this->builder->{$name}(...$params);
         if (is_object($result) && !$result instanceof ORM)
