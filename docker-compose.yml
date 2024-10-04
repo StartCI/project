@@ -1,0 +1,38 @@
+services:
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: startci
+      MYSQL_USER: startci
+      MYSQL_PASSWORD: startci
+    ports:
+      - 3306:3306
+    volumes:
+      - ./docker/mysql/data:/var/lib/mysql
+      - ./docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_USER: startci
+      POSTGRES_PASSWORD: startci
+      POSTGRES_DB: startci
+    ports:
+      - 5432:5432
+    volumes:
+      - ./docker/postgres/data:/var/lib/postgresql/data
+  php:
+    image: chialab/php-dev:8.3
+    working_dir: /var/www/html
+    command: bash -c "composer update;php spark serve --host=0.0.0.0 --port=8080"
+    ports:
+      - 81:8080
+    volumes:
+      - .:/var/www/html
+  caddy:
+    image: caddy:2.6.0-alpine
+    volumes:
+      - ./docker/caddy/Caddyfile:/etc/caddy/Caddyfile
+    ports:
+      - 443:443
+      - 80:80

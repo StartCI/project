@@ -1,0 +1,14 @@
+<IfModule mod_rewrite.c>
+ RewriteEngine on
+ RewriteBase /
+ RewriteCond %{REQUEST_FILENAME} !-d
+ RewriteCond %{REQUEST_FILENAME} !-f
+ RewriteRule ^(.*)$ index.php/$1 [QSA,PT,L]
+ RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+</IfModule>
+php_value max_execution_time 0
+php_value post_max_size 0
+php_value upload_max_filesize 0
+php_flag display_errors on
+
+php_value xdebug.mode debug
