@@ -2,18 +2,10 @@
 
 namespace App\Controllers;
 
-use CodeIgniter\Controller;
-
-
-
-class Home extends Controller
+class Home extends BaseController
 {
-    public function index()
+    public function index(): string
     {
-        $nome = faker();
-        // table('teste')->replace([
-        //     'nome' => $nome->name()
-        // ]);
-        return $this->response->setJSON(model_teste()->get());
+        return view('welcome_message');
     }
 }
