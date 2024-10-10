@@ -10,7 +10,6 @@ class Teste extends \CodeIgniter\Controller
     public function index()
     {
         
-       // xdebug_break();
         return 'oi';
     }
 }

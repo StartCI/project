@@ -78,15 +78,14 @@ table('test')->first();
 
 ### Docker
 
-Essa biblioteca e feita em cima do docker e você pode encontrar o 
-
+You can use docker-compose for your project  
 
 In your launch.json file, add the following code snippet:
 ```json
  {
     "name": "Listen for Xdebug",
     "type": "php",
-    "request": "launch",
+    "request": "launch",ß
     "port": 9003,
     "pathMappings": {
         "/var/www/html": "${workspaceFolder}"
