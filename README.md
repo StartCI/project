@@ -76,5 +76,23 @@ table('test')->first();
 // Returns the first row from the 'test' table as an object like {field: 'value'}
 ```
 
+### Docker
+
+Essa biblioteca e feita em cima do docker e você pode encontrar o 
+
+
+In your launch.json file, add the following code snippet:
+```json
+ {
+    "name": "Listen for Xdebug",
+    "type": "php",
+    "request": "launch",
+    "port": 9003,
+    "pathMappings": {
+        "/var/www/html": "${workspaceFolder}"
+    }
+}
+```
+
 #### More Examples
 For additional examples and usage details, check out the "test" folder in the "StartCI" project repository. There, you can find practical examples and demonstrations of various functionalities provided by "StartCI."

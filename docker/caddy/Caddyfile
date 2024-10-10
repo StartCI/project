@@ -1,4 +1,3 @@
 startci.localhost {
-
-    reverse_proxy / http://php:8080
+    reverse_proxy /* http://php
 }
