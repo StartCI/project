@@ -207,6 +207,7 @@ test('postgres', function () {
         'charset' => 'utf8'
     ]);
     $db = $postgres;
+    $db->query('DROP TABLE IF EXISTS users, user_cnames');
     $db->table('users')->create([
         'name' => 'text',
         'age' => 'integer',
