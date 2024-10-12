@@ -1,7 +1,8 @@
 <?php
 use CodeIgniter\Database\BaseConnection;
-use \CodeIgniter\Database\SQLite3\Connection;
 use CodeIgniter\Startci\Record;
+use \CodeIgniter\Database\SQLite3\Connection;
+use Pest\Plugins\Only;
 use function PHPUnit\Framework\assertContains;
 use function PHPUnit\Framework\assertCount;
 use function PHPUnit\Framework\assertEquals;
@@ -10,42 +11,13 @@ use function PHPUnit\Framework\assertIsNumeric;
 use function PHPUnit\Framework\assertNotEquals;
 use function PHPUnit\Framework\assertNotFalse;
 
-beforeEach(function () {
-
-    $this->sqlite = db([
-        'DBDriver' => 'SQLite3',
-        'hostname' => 'db.sqlite',
-        'database' => 'db.sqlite',
-    ]);
-    $this->mysql = db([
-        'DBDriver' => 'MySQLi',
-        'hostname' => 'localhost',
-        'database' => 'startci',
-        'username' => 'root',
-        'password' => '3af8601b46ab39f0',
-    ]);
-    $this->postgres = db([
-        'DBDriver' => 'Postgre',
-        'hostname' => 'localhost',
-        'database' => 'startci',
-        'username' => 'startci',
-        'password' => '3af8601b46ab39f0',
-    ]);
-});
-test('connection', function () {
-    expect($this->sqlite->con)->toBeInstanceOf(CodeIgniter\Database\SQLite3\Connection::class);
-    expect($this->mysql->con)->toBeInstanceOf(CodeIgniter\Database\MySQLi\Connection::class);
-    expect($this->postgres->con)->toBeInstanceOf(CodeIgniter\Database\Postgre\Connection::class);
-
-});
-
-
-
 test('sqlite', function () {
+    $uid = uniqid();
+    $db_name = 'db_' . $uid. '.sqlite';
     $sqlite = db([
         'DBDriver' => 'SQLite3',
-        'hostname' => 'db.sqlite',
-        'database' => 'db.sqlite',
+        'hostname' => $db_name,
+        'database' => $db_name,
     ]);
     $db = $sqlite;
     $db->table('users')->create([
@@ -105,18 +77,19 @@ test('sqlite', function () {
     assertEquals($total, 1);
 
 
-    if (file_exists('writable/db.sqlite')) {
-        unlink('writable/db.sqlite');
+    if (file_exists('writable/'.$db_name)) {
+        unlink('writable/'.$db_name);
     }
-
-
-
 });
+
 test('record', function () {
+    $uid = uniqid();
+    $db_name = 'db_' . $uid. '.sqlite';
+    
     $sqlite = db([
         'DBDriver' => 'SQLite3',
-        'hostname' => 'db.sqlite',
-        'database' => 'db.sqlite',
+        'hostname' => $db_name,
+        'database' => $db_name,
     ]);
 
 
@@ -147,15 +120,20 @@ test('record', function () {
     $record_result->name = 'record example';
     $value_return = $record_result->save();
     expect($value_return->name)->toBe('record example');
+    if(file_exists('writable/'.$db_name)) {
+        unlink('writable/'.$db_name);
+    }
 
-})->only();
+});
+
 test('mysql', function () {
     $mysql = db([
         'DBDriver' => 'MySQLi',
-        'hostname' => '127.0.0.1',
+        'hostname' => 'mysql',
         'database' => 'startci',
-        'username' => 'root',
-        'password' => '3af8601b46ab39f0',
+        'username' => 'startci',
+        'password' => 'startci',
+        'charset' => 'utf8mb4',
     ]);
     $db = $mysql;
     $db->table('users')->create([
@@ -222,10 +200,11 @@ test('mysql', function () {
 test('postgres', function () {
     $postgres = db([
         'DBDriver' => 'Postgre',
-        'hostname' => '127.0.0.1',
+        'hostname' => 'postgres',
         'database' => 'startci',
-        'username' => 'postgres',
-        'password' => '3af8601b46ab39f0',
+        'username' => 'startci',
+        'password' => 'startci',
+        'charset' => 'utf8'
     ]);
     $db = $postgres;
     $db->table('users')->create([

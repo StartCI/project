@@ -9,3 +9,4 @@ db.sqlite
 writable/db.sqlite
 docker/mysql/*
 docker/postgres/*
+.DS_Store
