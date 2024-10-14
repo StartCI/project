@@ -13,20 +13,19 @@ test('create', function () {
     $dbs = [
         db([
             'DBDriver' => 'MySQLi',
-            'hostname' => '127.0.0.1',
+            'hostname' => 'mysql',
             'database' => 'startci',
-            'username' => 'root',
-            'password' => '123',
+            'username' => 'startci',
+            'password' => 'startci',
             'port' => 3306,
-            'charset' => 'utf8',
-            'DBCollat' => 'utf8_general_ci',
+            'charset' => 'utf8mb4',
         ]),
         db([
             'DBDriver' => 'Postgre',
-            'hostname' => 'localhost',
+            'hostname' => 'postgres',
             'database' => 'startci',
             'username' => 'startci',
-            'password' => '3af8601b46ab39f0',
+            'password' => 'startci',
             'charset'  => 'utf8',
         ]),
         db([
@@ -38,7 +37,7 @@ test('create', function () {
 
     foreach ($dbs as $key => $db) {
         cache()->clean();
-        $model = new \App\Models\Clientes($db);
+        $model = new \Tests\Models\Clientes($db);
         $model->create();
         // $model->nome = 'felipe';
         // $model->save();
