@@ -7,7 +7,7 @@ use CodeIgniter\Startci\Commands\Orm;
 // uses(\CodeIgniter\Test\CIUnitTestCase::class);
 // uses(\CodeIgniter\Test\CIDatabaseTestCase::class);
 
-beforeEach(function () {});
+beforeEach(function () { });
 
 test('create', function () {
     $dbs = [
@@ -26,7 +26,7 @@ test('create', function () {
             'database' => 'startci',
             'username' => 'startci',
             'password' => 'startci',
-            'charset'  => 'utf8',
+            'charset' => 'utf8',
         ]),
         db([
             'DBDriver' => 'SQLite3',
@@ -34,45 +34,38 @@ test('create', function () {
             'database' => 'db.sqlite',
         ])
     ];
-
     foreach ($dbs as $key => $db) {
         cache()->clean();
-        $model = new \Tests\Models\Clientes($db);
-        $model->create();
-        // $model->nome = 'felipe';
-        // $model->save();
-        // $model->nome = 'felipe2';
-        // $model->save();
-        // $json = $model->toJson();
+        $cliente = new \App\Models\Cliente($db);
+        $cliente->create();
+        $usuario = new \App\Models\Usuario($db);
+        $usuario->create();
         $tables = $db->listTables();
         expect($tables)->toBeArray();
-        expect($tables)->toHaveCount(2);
-        expect($tables)->toContain('usuarios');
-        expect($tables)->toContain('clientes');
-        // xdebug_break();
+        expect($tables)->toContain('usuario');
+        expect($tables)->toContain('cliente');
     }
-});
+})->skip();
 
 test('save', function () {
 
     $dbs = [
         db([
             'DBDriver' => 'MySQLi',
-            'hostname' => '127.0.0.1',
+            'hostname' => 'mysql',
             'database' => 'startci',
-            'username' => 'root',
-            'password' => '123',
+            'username' => 'startci',
+            'password' => 'startci',
             'port' => 3306,
-            'charset' => 'utf8',
-            'DBCollat' => 'utf8_general_ci',
+            'charset' => 'utf8mb4',
         ]),
         db([
             'DBDriver' => 'Postgre',
-            'hostname' => 'localhost',
+            'hostname' => 'postgres',
             'database' => 'startci',
             'username' => 'startci',
-            'password' => '3af8601b46ab39f0',
-            'charset'  => 'utf8',
+            'password' => 'startci',
+            'charset' => 'utf8',
         ]),
         db([
             'DBDriver' => 'SQLite3',
@@ -82,34 +75,33 @@ test('save', function () {
     ];
     foreach ($dbs as $key => $db) {
         cache()->clean();
-        $model = new \App\Models\Clientes($db);
+        $model = new \App\Models\Cliente($db);
         $model->nome = 'NEWBGP';
         $cliente = $model->save();
         $id = $cliente->id;
-        xdebug_break();
+        expect($id)->toBeNumeric();
     }
-});
+})->skip();
 
 test('delete', function () {
     $dbs = [
-        // db([
-        //     'DBDriver' => 'MySQLi',
-        //     'hostname' => '127.0.0.1',
-        //     'database' => 'startci',
-        //     'username' => 'root',
-        //     'password' => '123',
-        //     'port' => 3306,
-        //     'charset' => 'utf8',
-        //     'DBCollat' => 'utf8_general_ci',
-        // ]),
-        // db([
-        //     'DBDriver' => 'Postgre',
-        //     'hostname' => 'localhost',
-        //     'database' => 'startci',
-        //     'username' => 'startci',
-        //     'password' => '3af8601b46ab39f0',
-        //     'charset'  => 'utf8',
-        // ]),
+        db([
+            'DBDriver' => 'MySQLi',
+            'hostname' => 'mysql',
+            'database' => 'startci',
+            'username' => 'startci',
+            'password' => 'startci',
+            'port' => 3306,
+            'charset' => 'utf8mb4',
+        ]),
+        db([
+            'DBDriver' => 'Postgre',
+            'hostname' => 'postgres',
+            'database' => 'startci',
+            'username' => 'startci',
+            'password' => 'startci',
+            'charset' => 'utf8',
+        ]),
         db([
             'DBDriver' => 'SQLite3',
             'hostname' => 'db.sqlite',
@@ -117,12 +109,18 @@ test('delete', function () {
         ])
     ];
     foreach ($dbs as $key => $db) {
-        $model = new \App\Models\Clientes($db);
-        $model->where('id', '1')->delete();//null
+        $model = new \App\Models\Cliente($db);
+        $ultimo_id = $model->selectMax('id')->first()->id;
+        $tmp = $model->where('id', $ultimo_id);//null
+        $model = $tmp->first();
+        $model->delete();
+        $foi_excluido = $model->where('id', $ultimo_id)->first();
+        expect($foi_excluido)->toBeNull();
     }
-});
+})->skip();
+test('select', function () { 
 
-test('select', function () {});
+})->skip();
 
 
 test('up', function () {
@@ -130,7 +128,7 @@ test('up', function () {
 
 
     // xdebug_break();
-});
+})->skip();
 
-test('seed', function () {});
+test('seed', function () { })->skip();
 

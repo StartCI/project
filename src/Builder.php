@@ -23,6 +23,8 @@ class Builder
      */
     var $con = null;
 
+    var $class = null;
+
     function __construct($db = null, $builder = null)
     {
         $this->con = $db;
@@ -53,6 +55,13 @@ class Builder
 
         return null;
     }
+    function setClass($class)
+    {
+        $this->class = $class;
+    }
+    function getClass(){
+        return $this->class;
+    }
 
     /**
      * Sets a test mode status.
@@ -63,6 +72,9 @@ class Builder
      */
     public function rs(string $type = 'object')
     {
+        if($this->class != null && $type == 'object'){
+            $type = $this->class;
+        }
         return $this->result($type);
     }
     // function save($data)
@@ -98,6 +110,9 @@ class Builder
      */
     public function result(string $type = 'object')
     {
+        if($this->class != null && $type == 'object'){
+            $type = $this->class;
+        }
         $get = $this->get();
         if ($get)
             return $get->getResult($type);
@@ -165,6 +180,9 @@ class Builder
      */
     public function first(string $type = 'object')
     {
+        if($this->class != null && $type == 'object'){
+            $type = $this->class;
+        }
         return $this->get()->getFirstRow($type);
     }
 
@@ -177,6 +195,9 @@ class Builder
      */
     public function last(string $type = 'object')
     {
+        if($this->class != null && $type == 'object'){
+            $type = $this->class;
+        }
         $result = $this->get()->getLastRow($type);
         return $result;
     }
@@ -302,7 +323,7 @@ class Builder
                     $forge->addField('updated_at DATETIME NOT NULL DEFAULT (datetime(\'now\',\'localtime\'))');
                     break;
                 case 'MySQLi':
-                    $forge->addField('created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP');
+                    $forge->addField('created_at DATETIME DEFAULT CURRENT_TIMESTAMP');
                     $forge->addField('updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP');
                     break;
             }

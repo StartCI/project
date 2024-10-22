@@ -12,52 +12,52 @@ use ReflectionObject;
 use ReflectionProperty;
 
 /**
- * @method ORM where($key, $value = null, bool $escape = null) Description
- * @method ORM orWhere($key, $value = null, bool $escape = null) Description
- * @method ORM distinct(bool $val = true)
- * @method ORM ignore(bool $ignore = true)
- * @method ORM select($select = '*', bool $escape = null)
- * @method ORM selectMax(string $select = '', string $alias = '')
- * @method ORM selectMin(string $select = '', string $alias = '')
- * @method ORM selectAvg(string $select = '', string $alias = '')
- * @method ORM selectSum(string $select = '', string $alias = '')
- * @method ORM selectCount(string $select = '', string $alias = '')
- * @method ORM from($from, bool $overwrite = false)
- * @method ORM join(string $table, string $cond, string $type = '', bool $escape = null)
- * @method ORM whereIn(string $key = null, $values = null, bool $escape = null)
- * @method ORM orWhereIn(string $key = null, $values = null, bool $escape = null)
- * @method ORM whereNotIn(string $key = null, $values = null, bool $escape = null)
- * @method ORM orWhereNotIn(string $key = null, $values = null, bool $escape = null)
- * @method ORM havingIn(string $key = null, $values = null, bool $escape = null)
- * @method ORM orHavingIn(string $key = null, $values = null, bool $escape = null)
- * @method ORM havingNotIn(string $key = null, $values = null, bool $escape = null)
- * @method ORM orHavingNotIn(string $key = null, $values = null, bool $escape = null)
- * @method ORM like($field, string $match = '', string $side = 'both', bool $escape = null, bool $insensitiveSearch = false)
- * @method ORM notLike($field, string $match = '', string $side = 'both', bool $escape = null, bool $insensitiveSearch = false)
- * @method ORM orLike($field, string $match = '', string $side = 'both', bool $escape = null, bool $insensitiveSearch = false)
- * @method ORM orNotLike($field, string $match = '', string $side = 'both', bool $escape = null, bool $insensitiveSearch = false)
- * @method ORM havingLike($field, string $match = '', string $side = 'both', bool $escape = null, bool $insensitiveSearch = false)
- * @method ORM notHavingLike($field, string $match = '', string $side = 'both', bool $escape = null, bool $insensitiveSearch = false)
- * @method ORM orHavingLike($field, string $match = '', string $side = 'both', bool $escape = null, bool $insensitiveSearch = false)
- * @method ORM orNotHavingLike($field, string $match = '', string $side = 'both', bool $escape = null, bool $insensitiveSearch = false)
- * @method ORM groupStart()
- * @method ORM orGroupStart()
- * @method ORM notGroupStart()
- * @method ORM orNotGroupStart()
- * @method ORM groupEnd()
- * @method ORM havingGroupStart()
- * @method ORM orHavingGroupStart()
- * @method ORM notHavingGroupStart()
- * @method ORM orNotHavingGroupStart()
- * @method ORM havingGroupEnd()
- * @method ORM groupBy($by, bool $escape = null)
- * @method ORM having($key, $value = null, bool $escape = null)
- * @method ORM orHaving($key, $value = null, bool $escape = null)
- * @method ORM orderBy(string $orderBy, string $direction = '', bool $escape = null)
- * @method ORM limit(?int $value = null, ?int $offset = 0)
- * @method ORM offset(int $offset)
- * @method ORM resetQuery()
- * @method ORM def($values = [])
+ * @method ORM|static where($key, $value = null, bool $escape = null) Description
+ * @method ORM|static orWhere($key, $value = null, bool $escape = null) Description
+ * @method ORM|static distinct(bool $val = true)
+ * @method ORM|static ignore(bool $ignore = true)
+ * @method ORM|static select($select = '*', bool $escape = null)
+ * @method ORM|static selectMax(string $select = '', string $alias = '')
+ * @method ORM|static selectMin(string $select = '', string $alias = '')
+ * @method ORM|static selectAvg(string $select = '', string $alias = '')
+ * @method ORM|static selectSum(string $select = '', string $alias = '')
+ * @method ORM|static selectCount(string $select = '', string $alias = '')
+ * @method ORM|static from($from, bool $overwrite = false)
+ * @method ORM|static join(string $table, string $cond, string $type = '', bool $escape = null)
+ * @method ORM|static whereIn(string $key = null, $values = null, bool $escape = null)
+ * @method ORM|static orWhereIn(string $key = null, $values = null, bool $escape = null)
+ * @method ORM|static whereNotIn(string $key = null, $values = null, bool $escape = null)
+ * @method ORM|static orWhereNotIn(string $key = null, $values = null, bool $escape = null)
+ * @method ORM|static havingIn(string $key = null, $values = null, bool $escape = null)
+ * @method ORM|static orHavingIn(string $key = null, $values = null, bool $escape = null)
+ * @method ORM|static havingNotIn(string $key = null, $values = null, bool $escape = null)
+ * @method ORM|static orHavingNotIn(string $key = null, $values = null, bool $escape = null)
+ * @method ORM|static like($field, string $match = '', string $side = 'both', bool $escape = null, bool $insensitiveSearch = false)
+ * @method ORM|static notLike($field, string $match = '', string $side = 'both', bool $escape = null, bool $insensitiveSearch = false)
+ * @method ORM|static orLike($field, string $match = '', string $side = 'both', bool $escape = null, bool $insensitiveSearch = false)
+ * @method ORM|static orNotLike($field, string $match = '', string $side = 'both', bool $escape = null, bool $insensitiveSearch = false)
+ * @method ORM|static havingLike($field, string $match = '', string $side = 'both', bool $escape = null, bool $insensitiveSearch = false)
+ * @method ORM|static notHavingLike($field, string $match = '', string $side = 'both', bool $escape = null, bool $insensitiveSearch = false)
+ * @method ORM|static orHavingLike($field, string $match = '', string $side = 'both', bool $escape = null, bool $insensitiveSearch = false)
+ * @method ORM|static orNotHavingLike($field, string $match = '', string $side = 'both', bool $escape = null, bool $insensitiveSearch = false)
+ * @method ORM|static groupStart()
+ * @method ORM|static orGroupStart()
+ * @method ORM|static notGroupStart()
+ * @method ORM|static orNotGroupStart()
+ * @method ORM|static groupEnd()
+ * @method ORM|static havingGroupStart()
+ * @method ORM|static orHavingGroupStart()
+ * @method ORM|static notHavingGroupStart()
+ * @method ORM|static orNotHavingGroupStart()
+ * @method ORM|static havingGroupEnd()
+ * @method ORM|static groupBy($by, bool $escape = null)
+ * @method ORM|static having($key, $value = null, bool $escape = null)
+ * @method ORM|static orHaving($key, $value = null, bool $escape = null)
+ * @method ORM|static orderBy(string $orderBy, string $direction = '', bool $escape = null)
+ * @method ORM|static limit(?int $value = null, ?int $offset = 0)
+ * @method ORM|static offset(int $offset)
+ * @method ORM|static resetQuery()
+ * @method ORM|static def($values = [])
  *
  */
 class ORM extends Record
@@ -73,7 +73,8 @@ class ORM extends Record
     private $builder = null;
     private $queryHistory = [];
 
-    function getQueryHistory(){
+    function getQueryHistory()
+    {
 
         return $this->queryHistory;
     }
@@ -101,8 +102,8 @@ class ORM extends Record
     function __get($name)
     {
         $value = $this->onGet($name);
-        if(!$value){
-            if($tmp = $this->getData()[$name]){
+        if (!$value) {
+            if ($tmp = $this->getData()[$name]) {
                 return $tmp;
             }
         }
@@ -116,9 +117,14 @@ class ORM extends Record
         parent::__set($name, $value);
     }
 
-    function get_fields(){
+    function get_fields()
+    {
 
         return $this->fields;
+    }
+    function get_autoload(){
+
+        return $this->autoload;
     }
     /**
      *
@@ -185,7 +191,8 @@ class ORM extends Record
         $this->autoload[] = $prop;
         return $this;
     }
-    function create($prefix=null){
+    function create($prefix = null)
+    {
         $this->__create($prefix, false);
         $this->__create($prefix, true);
     }
@@ -213,7 +220,7 @@ class ORM extends Record
             if ($is_relation && !in_array($type, ['date', 'datetime', 'timestamp'])) {
                 $c = new $type($this->getDatabase());
                 $c->create();
-                $type = $c->table . '.id';
+                $type = $c->getTable() . '.id';
             }
             if ($type[0] == '\\')
                 $type = substr($type, 1);
@@ -305,10 +312,10 @@ class ORM extends Record
 
 
     /**
-     *
-     * @return ORM|Record|self|null
+     * 
+     * @return self|parent|static
      */
-    function first(): ORM|Record|self|null
+    function first()
     {
         $v = $this->_first();
         $class = $this->get_class();
@@ -324,7 +331,12 @@ class ORM extends Record
         }
         foreach ($this->get_autoload() as $key => $value) {
             $content = $r->onGet($value);
-            $r->{$value} = $content;
+            try {
+                $r->{$value} = $content;
+            } catch (\Throwable $th) {
+                xdebug_break();
+            }
+            
         }
         return $r;
     }
@@ -333,17 +345,18 @@ class ORM extends Record
      *
      * @param string $name
      * @param array $params
-     * @return Database\BaseBuilder
+     * @return $this|parent|static
      */
     public function __call(string $name, array $params)
     {
-        $result = null;
-        if (method_exists($this->builder, $name))
+        try {
+            $this->builder->setClass($this->class);
             $result = $this->builder->{$name}(...$params);
-        if (is_object($result) && !$result instanceof ORM)
-            $result = $this;
-        $this->queryHistory[] = $this->getDatabase()->getLastQuery() . '';
-        return $result;
+            $this->queryHistory[] = $this->getDatabase()->getLastQuery() . '';
+        } catch (\Throwable $th) {
+            return null;
+        }
+        return $this;
     }
 
     function toJson()
@@ -512,10 +525,6 @@ class ORM extends Record
         return $this;
     }
 
-    function whereRaw($cond)
-    {
-        $this->where($cond, null, false);
-        return $this;
-    }
+
 
 }
