@@ -1,7 +1,7 @@
 {
     "name": "startci/project",
     "type": "library",
-    "version": "1.2.5",
+    "version": "1.2.6",
     "description": "Addons for codeigniter 4",
     "homepage": "https://github.com/StartCI/project",
     "license": "MIT",
@@ -20,12 +20,12 @@
         "composer/composer": "^2.5",
         "symfony/console": "^7",
         "psy/psysh": "*",
-        "league/climate": "^3.8.2"
+        "league/climate": "^3.8.2",
+        "codeigniter4/framework": "^4"
     },
     "require-dev": {
         "codeigniter/coding-standard": "^1.7",
         "mikey179/vfsstream": "1.6.*",
-        "codeigniter4/framework": "^4",
         "phpunit/phpunit": "*",
         "squizlabs/php_codesniffer": "^3",
         "pestphp/pest": "^2",
@@ -33,7 +33,6 @@
     },
     "autoload": {
         "psr-4": {
-            "CodeIgniter\\": "system/",
             "CodeIgniter\\Startci\\": "src/"
         },
         "files": [

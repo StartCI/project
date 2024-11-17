@@ -21,20 +21,20 @@ services:
       - 5432:5432
     volumes:
       - ./docker/postgres/data:/var/lib/postgresql/data
-  php:
-    image: chialab/php-dev:8.3-apache
-    working_dir: /var/www/html
-    ports:
-      - 9000:9000
-    volumes:
-      - .:/var/www/html
-      - ./docker/php/conf/extra.ini:/usr/local/etc/php/conf.d/extra.ini
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-  caddy:
-    image: caddy:2.6.0-alpine
-    volumes:
-      - ./docker/caddy/Caddyfile:/etc/caddy/Caddyfile
-    ports:
-      - 443:443
-      - 80:80
+#  php:
+#    image: chialab/php-dev:8.3-apache
+#    working_dir: /var/www/html
+#    ports:
+#      - 9000:9000
+#    volumes:
+#      - .:/var/www/html
+#      - ./docker/php/conf/extra.ini:/usr/local/etc/php/conf.d/extra.ini
+#    extra_hosts:
+#      - "host.docker.internal:host-gateway"
+#  caddy:
+#    image: caddy:2.6.0-alpine
+#    volumes:
+#      - ./d ocker/caddy/Caddyfile:/etc/caddy/Caddyfile
+#    ports:
+#      - 443:443
+#      - 80:80
