@@ -75,7 +75,7 @@ class Orm extends BaseCommand
      */
     public function run(array $params)
     {
-        chdir(ROOTPATH);
+        chdir(directory: WRITEPATH);
         $cmd = $params[0] ?? null;
         $this->$cmd($params);
     }
