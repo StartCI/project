@@ -68,6 +68,7 @@ class Db extends BaseCommand {
      * @param array $params
      */
     public function run(array $params) {
+        chdir(WRITEPATH);
         $cmd = $params[0] ?? null;
         $this->$cmd(in_array('force', $params));
     }
