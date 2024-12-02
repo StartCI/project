@@ -75,7 +75,9 @@ class Orm extends BaseCommand
      */
     public function run(array $params)
     {
-        chdir(directory: WRITEPATH);
+        // chdir(directory: APPPATH);
+        //(is_cli()) ? eval(\Psy\sh()) : false;
+        
         $cmd = $params[0] ?? null;
         $this->$cmd($params);
     }
@@ -111,12 +113,12 @@ class Orm extends BaseCommand
         $file .= "" . PHP_EOL;
         $file .= "}" . PHP_EOL;
         $file .= "" . PHP_EOL;
-        if (file_exists("../app/Models/$className.php"))
+        if (file_exists("app/Models/$className.php"))
             if (strtoupper(CLI::prompt('Overwrite file ? (y,n)', null, 'required')) != "Y")
                 return false;
-        file_put_contents("../app/Models/$className.php", $file);
-        $file = '';
-        $file = file_get_contents('../app/Common.php') . PHP_EOL;;
+        file_put_contents("app/Models/$className.php", $file);
+        // $file = '';
+        // $file = file_get_contents('../app/Common.php') . PHP_EOL;;
         // $file .= "/** " . PHP_EOL;
         // $file .= " * @return \App\Models\\" . $className . PHP_EOL;
         // $file .= " */" . PHP_EOL;
@@ -217,14 +219,14 @@ class Orm extends BaseCommand
             $file .= "    }" . PHP_EOL;
             $file .= "" . PHP_EOL;
             $file .= "}" . PHP_EOL;
-            file_put_contents("../app/Models/$className.php", $file);
+            file_put_contents("app/Models/$className.php", $file);
             // file_put_contents("../debug/$className.php", $file);
         }
     }
     function seed($p)
     {
 
-        $path = '../app/Models';
+        $path = 'app/Models';
         $fqcns = array();
         $allFiles = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path));
         $phpFiles = new RegexIterator($allFiles, '/\.php$/');
@@ -270,7 +272,7 @@ class Orm extends BaseCommand
     }
     function truncate($p)
     {
-        $path = '../app/Models';
+        $path = 'app/Models';
         $fqcns = array();
         $allFiles = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path));
         $phpFiles = new RegexIterator($allFiles, '/\.php$/');
@@ -353,7 +355,7 @@ class Orm extends BaseCommand
         $con = db_connect();
         $con->disableForeignKeyChecks();
         $con->transBegin();
-        $path = '../app/Models';
+        $path = 'app/Models';
         $fqcns = array();
         $allFiles = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path));
         $phpFiles = new RegexIterator($allFiles, '/\.php$/');
@@ -389,7 +391,7 @@ class Orm extends BaseCommand
 
 
             try {
-                CLI::clearScreen();
+                // CLI::clearScreen();
                 CLI::print("Table  $fqn");
                 CLI::newLine();
                 CLI::showProgress($key, $count);
@@ -410,7 +412,7 @@ class Orm extends BaseCommand
             if (!class_exists($fqn))
                 CLI::error("The class $fqn not found");
             $c = new $fqn();
-            CLI::clearScreen();
+            // CLI::clearScreen();
             CLI::print("Foreign key $fqn");
             CLI::newLine();
             CLI::showProgress($key, $count);
