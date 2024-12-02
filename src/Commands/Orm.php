@@ -321,7 +321,8 @@ class Orm extends BaseCommand
     function up()
     {
         xdebug_break();
-        cache()->delete('startci_models_create');
+        cache()->delete('startci_models_create_0');
+        cache()->delete('startci_models_create_1');
         // for ($i = 0; $i < 10; $i++) {
 
         //     try {
@@ -396,7 +397,7 @@ class Orm extends BaseCommand
                 CLI::newLine();
                 CLI::showProgress($key, $count);
 
-                $c->create(false);
+                $c->create();
             } catch (\Throwable $th) {
                 (is_cli()) ? eval(\Psy\sh()) : false;
 
@@ -407,22 +408,22 @@ class Orm extends BaseCommand
         }
 
 
-        foreach ($fqcns as $key => $value) {
-            $fqn = $value;
-            if (!class_exists($fqn))
-                CLI::error("The class $fqn not found");
-            $c = new $fqn();
-            // CLI::clearScreen();
-            CLI::print("Foreign key $fqn");
-            CLI::newLine();
-            CLI::showProgress($key, $count);
-            $c->create(true);
-        }
-        try {
-            $con->simpleQuery("SET foreign_key_checks = 1");
-        } catch (\Throwable $th) {
-            //throw $th;
-        }
+        // foreach ($fqcns as $key => $value) {
+        //     $fqn = $value;
+        //     if (!class_exists($fqn))
+        //         CLI::error("The class $fqn not found");
+        //     $c = new $fqn();
+        //     // CLI::clearScreen();
+        //     CLI::print("Foreign key $fqn");
+        //     CLI::newLine();
+        //     CLI::showProgress($key, $count);
+        //     $c->create(true);
+        // }
+        // try {
+        //     $con->simpleQuery("SET foreign_key_checks = 1");
+        // } catch (\Throwable $th) {
+        //     //throw $th;
+        // }
         $con->transCommit();
     }
 }

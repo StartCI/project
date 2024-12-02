@@ -122,7 +122,8 @@ class ORM extends Record
 
         return $this->fields;
     }
-    function get_autoload(){
+    function get_autoload()
+    {
 
         return $this->autoload;
     }
@@ -200,12 +201,12 @@ class ORM extends Record
     {
         // xdebug_break();
         $rc = new ReflectionClass($this->class);
-        if (!$models_create = cache()->get('startci_models_create'))
+        if (!$models_create = cache()->get('startci_models_create_' . ($pk ? 1 : 0)))
             $models_create = [];
         if (in_array($rc->getName(), $models_create))
             return false;
         $models_create[] = $rc->getName();
-        cache()->save('startci_models_create', $models_create, 3600);
+        cache()->save('startci_models_create_' . ($pk ? 1 : 0), $models_create, 3600);
 
         $factory = DocBlockFactory::createInstance();
         $docblock = $factory->create($rc->getDocComment() ?? '');
@@ -336,7 +337,7 @@ class ORM extends Record
             } catch (\Throwable $th) {
                 xdebug_break();
             }
-            
+
         }
         return $r;
     }
