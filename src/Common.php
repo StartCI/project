@@ -73,9 +73,10 @@ function form($key = null, $default = null)
  * @param type $name
  * @return \CodeIgniter\Startci\Builder
  */
-function table(string $name, $db = null): \CodeIgniter\Startci\Builder
+function table(string $name,string $db = null): \CodeIgniter\Startci\Builder
 {
-    return new Builder($name, db_connect($db));
+    $db = db_connect($db);
+    return new Builder(db: $db, builder: db_connect($db)->table($name));
 }
 
 
