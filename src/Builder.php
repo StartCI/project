@@ -153,6 +153,7 @@ class Builder
     function first_record()
     {
         $record =  $this->first(Record::class);
+        if(!$record) return null;
         $record->setDatabase($this->con);
         $record->setTable($this->builder->getTable());
         return $record;
@@ -166,6 +167,7 @@ class Builder
     function last_record()
     {
         $record = $this->last(Record::class);
+        if(!$record) return null;
         $record->setDatabase($this->con);
         $record->setTable($this->builder->getTable());
         return $record;
