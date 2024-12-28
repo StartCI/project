@@ -75,7 +75,7 @@ class Orm extends BaseCommand
      */
     public function run(array $params)
     {
-        // chdir(directory: APPPATH);
+        chdir(directory: ROOTPATH);
         //(is_cli()) ? eval(\Psy\sh()) : false;
         
         $cmd = $params[0] ?? null;
