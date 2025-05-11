@@ -49,6 +49,7 @@ class Init extends \CodeIgniter\CLI\BaseCommand
         else
             $climate->animation('ci' . $i)->speed(150)->enterFrom('bottom');
         $version = json_decode(file_get_contents(ROOTPATH . 'vendor/startci/project/composer.json'));
+        /*
         $climate->out("Running version $version->version");
         if ($climate->confirm('Enable road runner ?')->confirmed()) {
             $oldpath = getcwd();
@@ -69,6 +70,7 @@ class Init extends \CodeIgniter\CLI\BaseCommand
             chdir($oldpath);
             unset($oldpath);
         }
+            */
         if ($climate->confirm('Enable cron job ?')->confirmed()) {
             exec("composer require daycry/cronjob");
             Process::fromShellCommandline("php spark cronjob:publish")->run();
